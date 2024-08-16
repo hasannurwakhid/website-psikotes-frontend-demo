@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 
 function Login() {
-  
   return (
     <div className="flex">
       {/* Sisi Kiri  */}
@@ -16,10 +15,25 @@ function Login() {
           </p>
         </div>
         <form action="" className="flex flex-col gap-5">
-          <input type="text" className=" bordered p-3 rounded-xl border" placeholder="NIK" />
-          <input type="password" className=" bordered p-3 rounded-xl border" placeholder="Password" />
-          <button className="bg-red-600 mx-[120px] p-2 text-white rounded-xl hover:bg-red-700 ">Masuk</button>
+          <input
+            type="text"
+            className=" bordered p-3 rounded-xl border"
+            placeholder="NIK"
+          />
+          <input
+            type="password"
+            className=" bordered p-3 rounded-xl border"
+            placeholder="Password"
+          />
+          <div className="">
+            <input type="checkbox" className="" />
+            <p>Ingat saya</p>
+          </div>
         </form>
+
+        <button className="bg-red-600 px-12 py-2 m-5 text-white rounded-xl hover:bg-red-700 ">
+          Masuk
+        </button>
       </div>
       {/* Sisi Kanan  */}
       <div className="flex justify-start">
