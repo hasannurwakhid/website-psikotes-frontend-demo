@@ -6,6 +6,13 @@ function add_acc() {
     const toggleSidebar = () => {
       setSidebarOpen(!sidebarOpen);
     };
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const toggleModal = () => {
+      setIsModalOpen(!isModalOpen);
+    };
+
     return (
         <div className="flex h-screen bg-gray-100">
           {/* Sidebar */}
@@ -82,7 +89,7 @@ function add_acc() {
                   <td className="py-3 px-6">abcde fghih klmno</td>
                   <td className="py-3 px-6">abcdefghijklmno@gmail.com</td>
                   <td className="py-3 px-6 flex items-center space-x-3">
-                    <button className="text-gray-500 hover:text-red-700">
+                    <button className="text-gray-500 hover:text-red-700" onClick={toggleModal}>
                       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H7a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M15.586 4.586a2 2 0 112.828 2.828L10 15.828l-4 1 1-4 8.586-8.586z" />
                       </svg>
@@ -107,6 +114,62 @@ function add_acc() {
                 </div>
               </div>
             </div>
+
+            {isModalOpen && (
+              <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+                  <button className="absolute top-2 right-2 text-gray-500" onClick={toggleModal}>
+                    &times;
+                  </button>
+                  <form>
+                    <div className="mb-4">
+                      <label className="block text-gray-700 text-sm font-bold mb-2">
+                        Nama Lengkap
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Nama Lengkap"
+                        className="w-full p-2 border rounded"
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block text-gray-700 text-sm font-bold mb-2">NIP</label>
+                      <input
+                        type="text"
+                        placeholder="NIP"
+                        className="w-full p-2 border rounded"
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block text-gray-700 text-sm font-bold mb-2">
+                        Alamat Email
+                      </label>
+                      <input
+                        type="email"
+                        placeholder="Alamat Email"
+                        className="w-full p-2 border rounded"
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block text-gray-700 text-sm font-bold mb-2">
+                        Kata Sandi
+                      </label>
+                      <input
+                        type="password"
+                        placeholder="Kata Sandi"
+                        className="w-full p-2 border rounded"
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      className="w-full bg-red-600 text-white p-2 rounded-lg hover:bg-red-700"
+                    >
+                      Simpan
+                    </button>
+                  </form>
+                </div>
+              </div>
+            )}
           </main>
         </div>
       );
