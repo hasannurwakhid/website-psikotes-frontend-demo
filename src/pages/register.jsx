@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Login() {
+function Register() {
   const navigate = useNavigate();
   return (
     <div className="flex">
       {/* Sisi Kiri  */}
       <div className="w-[720px] px-12 pt-12">
         <img src=".\src\assets\logo.svg" className="" />
-        <div className="mt-16 mb-6 flex flex-col gap-2">
+        <div className="mt-8 mb-3 flex flex-col gap-2">
           <p className="text-red-600 text-4xl">
             <strong>Selamat Datang,</strong>
           </p>
@@ -19,46 +19,50 @@ function Login() {
             Silahkan masuk ke akun anda sebelum mengerjakan ujian psikotes
           </p>
         </div>
-        <form action="" className="flex flex-col gap-6 mt-10">
+        <form action="" className="flex flex-col gap-3 mt-6">
           <input
             type="text"
             className=" bordered p-3 rounded-xl border"
             placeholder="NIK"
           />
           <input
+            type="text"
+            className=" bordered p-3 rounded-xl border"
+            placeholder="Nama Lengkap"
+          />
+          <input
+            type="text"
+            className=" bordered p-3 rounded-xl border"
+            placeholder="Email"
+          />
+          <input
             type="password"
             className=" bordered p-3 rounded-xl border"
             placeholder="Password"
           />
-          <div className="flex justify-between">
-            <div className="flex gap-2">
-              <input type="checkbox" className="" />
-              <p>Ingat saya</p>
-            </div>
-            <div className="flex gap-2">
-              <button className="text-blue-600 hover:text-blue-700">
-                Lupa Password
-              </button>
-            </div>
-          </div>
+          <input
+            type="password"
+            className=" bordered p-3 rounded-xl border"
+            placeholder="Konfirmasi Password"
+          />
         </form>
 
-        <div className="flex flex-col items-center gap-3 justify-center my-4">
+        <div className="flex flex-col items-center gap-3 justify-center mt-4">
           <button
-            className="bg-red-600 w-full py-2 mt-5 text-white rounded-xl hover:bg-red-700"
+            className="bg-red-600 w-full py-2 mt-5 text-white rounded-xl hover:bg-red-700 "
             onClick={(e) => {
-              navigate("/");
+              navigate("/login");
             }}
           >
-            Masuk
+            Daftar
           </button>
           <button
             className="text-blue-600 hover:text-blue-700"
             onClick={(e) => {
-              navigate("/register");
+              navigate("/login");
             }}
           >
-            Belum punya akun?
+            Masuk ke akun Anda
           </button>
         </div>
       </div>
@@ -70,4 +74,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Register;

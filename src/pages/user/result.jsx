@@ -81,37 +81,24 @@ function Dashboard() {
         <img src=".\src\assets\logo-center.svg" alt="" className="w-[25%]" />
         <div className="flex flex-col items-center rounded-xl w-[50%] py-12 px-16 shadow-xl">
           <p className="text-4xl">
-            <strong>Selamat Datang,</strong>
-          </p>
-          <p className="text-4xl">
-            <strong>Peserta Seleksi Tahap Psikotes</strong>
+            <strong>Terima Kasih</strong>
           </p>
           <p className="m-4 text-center">
-            Selamat Anda telah sampai pada seleksi tahap psikotes Dinas
-            Kependudukan Dan Pencatatan Sipil Kota Semarang. Anda akan
-            mengerjakan sebanyak <strong>90 Soal</strong> dibagi dalam beberapa
-            sub-test.
+            Selamat Anda telah menyelesaikan Tes Psikotes. Berikut ini merupakan
+            nilai yang anda dapatkan.
           </p>
-          <p className="pb-6">Selamat Mengerjakan</p>
+          <p className="pb-6">Tetap semangat</p>
           <div className="flex bg-red-200 py-3 px-4 rounded-xl gap-4">
             <p>{formatDate()}</p>
             <p>|</p>
             <p>{time}</p>
           </div>
-          <div className="mt-5">
-            <p>Total Waktu Pengerjaan</p>
-            <p className="text-center">
-              <strong>1 jam 30 Menit</strong>
+          <div className="p-8  border border-black  rounded m-4">
+            <p>Nilai Anda</p>
+            <p className="text-center text-2xl">
+              <strong>90</strong>
             </p>
           </div>
-          <button
-            className="bg-red-600 rounded-xl text-white p-2 px-12 hover:bg-red-700 mt-5"
-            onClick={(e) => {
-              navigate("/quest");
-            }}
-          >
-            Masuk
-          </button>
         </div>
       </div>
     </div>
