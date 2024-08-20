@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Header from "../../components/header";
 
 function add_acc() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -14,34 +15,15 @@ function add_acc() {
 
   return (
     <div className="flex flex-col h-screen bg-gray-100">
-      {/* Navbar */}
-      <header className="bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <div className="flex items-center">
-              <img
-                src="\src\assets\logo.svg"
-                alt="Logo"
-                className="mr-5 w-100 h-12 ml-5"/>
-            </div>
-
-            <div className="flex items-center space-x-4">
-              {/* Profile Icon */}
-              <img
-                src="/src/assets/profile.svg"
-                alt="Profile"
-                className="w-10 h-10 rounded-full cursor-pointer"/>
-            </div>
-          </div>
-        </div>
-      </header>
-
+      <Header />
       {/* Sidebar and Main Content */}
-      <div className="flex flex-grow">
+      <div className="container mx-auto flex flex-grow">
         {/* Sidebar */}
-        <aside className={`fixed md:relative transform top-0 left-0 h-full w-64 bg-red-700 text-white md:translate-x-0 p-6 transition-transform ${
+        <aside
+          className={`fixed md:relative transform top-0 left-0 h-full w-64 bg-red-700 text-white md:translate-x-0 p-6 transition-transform ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
-          }`}>
+          }`}
+        >
           <nav>
             <ul>
               <li className="mb-4 bg-red-700 rounded-lg p-2 hover:bg-red-800">
@@ -83,7 +65,9 @@ function add_acc() {
           <div className="bg-white shadow-lg rounded-lg p-6">
             <header className="flex justify-between items-center mb-6">
               <div className="flex-1 text-left">
-                <h1 className="text-2xl font-bold text-gray-900">Daftar Akun</h1>
+                <h1 className="text-2xl font-bold text-gray-900">
+                  Daftar Akun
+                </h1>
                 <p className="text-gray-600">Jumlah akun terdaftar: 138</p>
               </div>
               <div className="flex-1 flex justify-end items-center">
@@ -111,7 +95,7 @@ function add_acc() {
                   </span>
                 </div>
               </div>
-              <button className="bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-700">
+              <button className="bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-700" onClick={toggleModal}>
                 Tambah akun
               </button>
             </header>
@@ -120,8 +104,12 @@ function add_acc() {
               <thead>
                 <tr>
                   <th className="py-3 px-6 font-medium text-gray-600">Nama</th>
-                  <th className="py-3 px-6 font-medium text-gray-600">Alamat Email</th>
-                  <th className="py-3 px-6 font-medium text-gray-600">Pilihan</th>
+                  <th className="py-3 px-6 font-medium text-gray-600">
+                    Alamat Email
+                  </th>
+                  <th className="py-3 px-6 font-medium text-gray-600">
+                    Pilihan
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -171,7 +159,9 @@ function add_acc() {
             </table>
 
             <div className="flex justify-end items-center mt-6">
-              <p className="text-sm font-semibold text-gray-500 mr-2">1 dari 100</p>
+              <p className="text-sm font-semibold text-gray-500 mr-2">
+                1 dari 100
+              </p>
               <div className="flex items-center">
                 <button className="px-2 py-1 font-bold text-gray-500 hover:text-red-700">
                   &lt;
