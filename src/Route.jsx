@@ -14,6 +14,10 @@ import { Provider } from "react-redux";
 import { persistor, store } from "./redux/store.js";
 import { PersistGate } from "redux-persist/integration/react";
 import { ToastContainer } from "react-toastify";
+import DashboardAdmin from "./pages/admin/dashboard.jsx";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Questions from "./pages/admin/questions.jsx";
+import AddQuestions from "./pages/admin/add_questions.jsx";
 
 function App() {
   return (
@@ -27,6 +31,9 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/quest" element={<Question />} />
             <Route path="/result" element={<Result />} />
+            <Route path="/DashboardAdmin" element={<DashboardAdmin />} />
+            <Route path="/questions" element={<Questions />} />
+            <Route path="/AddQuestions" element={<AddQuestions />} />
             {/* other routes */}
           </Routes>
           <ToastContainer
