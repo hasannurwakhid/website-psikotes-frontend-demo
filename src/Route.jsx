@@ -7,8 +7,8 @@ import Result from "./pages/user/result.jsx";
 import AddAcc from "./pages/admin/add_acc.jsx";
 import DashboardAdmin from "./pages/admin/dashboard.jsx";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Questions from "./pages/admin/questios.jsx";
-
+import Questions from "./pages/admin/questions.jsx";
+import AddQuestions from "./pages/admin/add_questions.jsx";
 
 function App() {
   return (
@@ -22,6 +22,7 @@ function App() {
         <Route path="/result" element={<Result />} />
         <Route path="/DashboardAdmin" element={<DashboardAdmin />} />
         <Route path="/questions" element={<Questions />} />
+        <Route path="/AddQuestions" element={<AddQuestions />} />
         {/* other routes */}
       </Routes>
     </Router>

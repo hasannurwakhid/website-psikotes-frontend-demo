@@ -16,7 +16,7 @@ function Sidebar({ sidebarOpen, toggleSidebar }) {
           onClick={toggleSidebar}
         >
           <svg
-            className="w-6 h-6 text-black hover:text-gray-200"
+            className="w-6 h-6 text-white hover:text-gray-200"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
