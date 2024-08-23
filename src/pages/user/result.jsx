@@ -79,7 +79,7 @@ function Dashboard() {
       {/* Content  */}
       <div className="flex flex-col items-center justify-center h-screen gap-4">
         <img src=".\src\assets\logo-center.svg" alt="" className="w-[25%]" />
-        <div className="flex flex-col items-center rounded-xl w-[50%] py-12 px-16 shadow-xl">
+        <div className="bg-white flex flex-col items-center rounded-xl w-[50%] py-12 px-16 shadow-xl">
           <p className="text-4xl">
             <strong>Terima Kasih</strong>
           </p>
