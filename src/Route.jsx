@@ -5,7 +5,9 @@ import Dashboard from "./pages/user/dashboard.jsx";
 import Question from "./pages/user/question.jsx";
 import Result from "./pages/user/result.jsx";
 import AddAcc from "./pages/admin/add_acc.jsx";
+import DashboardAdmin from "./pages/admin/dashboard.jsx";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Questions from "./pages/admin/questios.jsx";
 
 
 function App() {
@@ -18,6 +20,8 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/quest" element={<Question />} />
         <Route path="/result" element={<Result />} />
+        <Route path="/DashboardAdmin" element={<DashboardAdmin />} />
+        <Route path="/questions" element={<Questions />} />
         {/* other routes */}
       </Routes>
     </Router>

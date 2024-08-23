@@ -33,7 +33,7 @@ function AddAcc() {
       {/* Sidebar and Main Content */}
       <div className="relative flex flex-grow">
         {/* Sidebar */}
-        <Sidebar sidebarOpen={sidebarOpen}/>
+        <Sidebar sidebarOpen={sidebarOpen} toggleSidebar={toggleSidebar}/>
 
         {/* Main Content */}
         <main className="flex-grow lg:ml-[250px] p-8 mt-[63px] lg:mt-20 z-10">
@@ -425,6 +425,7 @@ function AddAcc() {
               </div>
             </div>
           </div>
+          
           {isEditAccOpen && (
             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-40">
               <div className="bg-white p-6 rounded-lg shadow-lg w-96">
