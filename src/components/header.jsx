@@ -12,7 +12,10 @@ function Header() {
           <p>
             <strong>{user.name}</strong>
           </p>
-          <img src=".\src\assets\icon_profil.svg" className="w-[32px]" />
+          <img
+            src=".\src\assets\icon_profil.svg"
+            className="w-[32px] hidden md:block"
+          />
         </div>
       </div>
     </div>
