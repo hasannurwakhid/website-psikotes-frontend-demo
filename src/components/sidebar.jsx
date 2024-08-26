@@ -45,7 +45,7 @@ function Sidebar({ sidebarOpen, toggleSidebar }) {
               </p>
             </div>
           </li>
-          <li className="mb-4 bg-red-700 rounded-lg p-2 hover:bg-red-800">
+          <li className="mb-4 bg-red-700 rounded-lg p-2 hover:bg-red-800" onClick={() => navigate("/dashboardadmin")}>
             <a href="#beranda" className="flex items-center ml-4">
               <img
                 src="\src\assets\beranda.svg"
@@ -65,7 +65,7 @@ function Sidebar({ sidebarOpen, toggleSidebar }) {
               <span>Kumpulan Soal</span>
             </a>
           </li>
-          <li className="mb-4 bg-red-700 rounded-lg p-2">
+          <li className="mb-4 bg-red-700 rounded-lg p-2 hover:bg-red-800" onClick={() => navigate("/addacc")}>
             <a href="#akun" className="flex items-center ml-4">
               <img
                 src="\src\assets\tambah_akun.svg"

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import Header from "../../components/header";
 import Sidebar from "../../components/sidebar";
+import { useNavigate } from "react-router-dom";
+
 
 function Questions() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -26,20 +28,24 @@ function Questions() {
       </nav>
     );
   }
-
+  const navigate = useNavigate();
   return (
     <div className="flex flex-col maxsm:bg-gray-100">
       <Header sidebarOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
       {/* Sidebar and Main Content */}
       <div className="relative flex flex-grow">
         {/* Sidebar */}
-        <Sidebar sidebarOpen={sidebarOpen} toggleSidebar={toggleSidebar}/>
+        <Sidebar sidebarOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
 
         {/* Main Content */}
         <main className="flex-grow lg:ml-[250px] p-8 mt-[63px] lg:mt-20 z-10">
           <div className="bg-white shadow-lg rounded-lg p-6">
             <div className="bg-red-600 hover:bg-red-700 px-6 py-2 text-white text-center py-3 mb-6 rounded-2xl shadow">
-              <button className="flex items-center w-full justify-between">
+              <button
+                className="flex items-center w-full justify-between"
+                onClick={() => navigate("/addquestions")}
+              >
+                {" "}
                 <span className="text-xl font-bold">Tambah Soal</span>
                 <img src=".\src\assets\ts.svg" />
               </button>
