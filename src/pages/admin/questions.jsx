@@ -3,9 +3,9 @@ import Header from "../../components/header";
 import Sidebar from "../../components/sidebar";
 import { useNavigate } from "react-router-dom";
 
-
 function Questions() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -43,9 +43,8 @@ function Questions() {
             <div className="bg-red-600 hover:bg-red-700 px-6 py-2 text-white text-center py-3 mb-6 rounded-2xl shadow">
               <button
                 className="flex items-center w-full justify-between"
-                onClick={() => navigate("/addquestions")}
+                onClick={(e) => navigate("/AddQuestions")}
               >
-                {" "}
                 <span className="text-xl font-bold">Tambah Soal</span>
                 <img src=".\src\assets\ts.svg" />
               </button>
@@ -55,7 +54,7 @@ function Questions() {
               <Card
                 title="Tes Sinonim"
                 totalQuestions={40}
-                duration="15 Menit"
+                duration="15 Menit" 
               />
               <Card
                 title="Tes Antonim"
