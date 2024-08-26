@@ -28,7 +28,7 @@ function Questions() {
       </nav>
     );
   }
-
+  const navigate = useNavigate();
   return (
     <div className="flex flex-col maxsm:bg-gray-100">
       <Header sidebarOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
