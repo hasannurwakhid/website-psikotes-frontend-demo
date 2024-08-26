@@ -28,7 +28,7 @@ function AddAcc() {
   };
 
   return (
-    <div className="flex flex-col maxsm:bg-gray-100">
+    <div className="flex flex-col max-sm:bg-gray-100">
       <Header sidebarOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
       {/* Sidebar and Main Content */}
       <div className="relative flex flex-grow">
