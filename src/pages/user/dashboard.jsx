@@ -100,7 +100,7 @@ function Dashboard() {
           alt=""
           className="w-[25%] max-lg:w-[65%]"
         />
-        <div className="flex flex-col bg-white   items-center rounded-xl w-[50%] max-lg:w-[80%] text-center max-lg:text-sm py-12 max-lg:py-6 px-16 max-lg:px-2 shadow-xl">
+        <div className="flex flex-col bg-white   items-center rounded-xl w-[50%] max-lg:w-[88%] text-center max-lg:text-sm py-12 max-lg:py-6 px-16 max-lg:px-2 shadow-xl">
           <p className="text-4xl max-lg:text-2xl">
             <strong>Selamat Datang,</strong>
           </p>
