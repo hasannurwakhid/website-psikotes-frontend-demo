@@ -4,7 +4,11 @@ import Header from "../../components/header";
 import "@fortawesome/fontawesome-free/js/all.js";
 import { useDispatch, useSelector } from "react-redux";
 import { setAnswer, setQuestions } from "../../redux/reducers/questReducers";
-import { answerQuestion, submitTest } from "../../redux/actions/questAction";
+import {
+  answerQuestion,
+  getPesertaQuestion,
+  submitTest,
+} from "../../redux/actions/questAction";
 
 function Question() {
   const navigate = useNavigate();
@@ -46,6 +50,10 @@ function Question() {
     console.log("option", options);
     console.log("timer", timer);
   }, [selectedQuestionId, indexOption]);
+
+  useEffect(() => {
+    dispatch(getPesertaQuestion(navigate));
+  }, []);
 
   const handleQuestionClick = (id, index) => {
     setindexOption(index);
@@ -91,12 +99,30 @@ function Question() {
   );
 
   useEffect(() => {
-    // Fungsi untuk mengupdate waktu setiap milidetik
+    // Ambil endTime dari localStorage
+    const endTime = localStorage.getItem("endTime");
+
+    if (!endTime || new Date(endTime) <= new Date()) {
+      const newEndTime = new Date().getTime() + timer;
+      localStorage.setItem("endTime", new Date(newEndTime).toISOString());
+      setTimeLeft(newEndTime - new Date().getTime());
+    } else {
+      setTimeLeft(new Date(endTime).getTime() - new Date().getTime());
+    }
+
+    // Update waktu tersisa setiap 10ms
     const interval = setInterval(() => {
-      setTimeLeft((prevTime) => (prevTime > 0 ? prevTime - 10 : 0));
+      const updatedTimeLeft =
+        new Date(localStorage.getItem("endTime")).getTime() -
+        new Date().getTime();
+
+      setTimeLeft(updatedTimeLeft > 0 ? updatedTimeLeft : 0);
+
+      if (updatedTimeLeft <= 0) {
+        clearInterval(interval);
+      }
     }, 10);
 
-    // Cleanup interval saat komponen di-unmount
     return () => clearInterval(interval);
   }, []);
 
