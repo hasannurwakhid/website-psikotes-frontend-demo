@@ -45,7 +45,7 @@ function Questions() {
                 onClick={(e) => navigate("/AddQuestions")}
               >
                 <span className="text-xl font-bold">Tambah Soal</span>
-                <img src=".\src\assets\ts.svg" />
+                <img src="\img\ts.svg" />
               </button>
             </div>
 

@@ -24,21 +24,21 @@ function DashboardAdmin() {
               <div className="text-gray-500">Jumlah Kategori Soal</div>
               <div className="flex w-full justify-between">
                 <div className="text-6xl font-bold">10</div>
-                <img src=".\src\assets\jks.svg"/>
+                <img src="\img\jks.svg"/>
               </div>
             </div>
             <div className="bg-white p-6 rounded-lg shadow">
               <div className="text-gray-500">Rata Rata Nilai Peserta</div>
               <div className="flex w-full justify-between">
                 <div className="text-6xl font-bold">89</div>
-                <img src=".\src\assets\rnp.svg"/>
+                <img src="\img\rnp.svg"/>
               </div>
             </div>
             <div className="bg-white p-6 rounded-lg shadow">
               <div className="text-gray-500">Batas Minimal Nilai</div>
               <div className="flex w-full justify-between">
                 <div className="text-6xl font-bold">80</div>
-                <img src=".\src\assets\bmn.svg"/>
+                <img src="\img\bmn.svg"/>
               </div>            </div>
           </div>
 

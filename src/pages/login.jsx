@@ -37,7 +37,7 @@ function Login() {
     <div className="flex bg-white">
       {/* Sisi Kiri  */}
       <div className="container mx-auto my-auto w-[720px] lg:px-16 max-sm:px-12 md:px-32 max-sm:pt-5 lg:pt-10 md:pt-7 flex flex-col lg:gap-3 justify-center h-screen">
-        <img src=".\src\assets\logo.svg" className="max-sm:py-3" />
+        <img src="\img\logo.svg" className="max-sm:py-3" />
         <div className="sm:mt-12 mb-6 flex flex-col gap-2">
           <p className="text-red-600 text-4xl max-sm:text-3xl">
             <strong>Selamat Datang,</strong>
@@ -127,7 +127,7 @@ function Login() {
       </div>
       {/* Sisi Kanan  */}
       <div className="flex justify-start max-lg:hidden ">
-        <img src=".\src\assets\bg_red.jpg" className="h-screen" />
+        <img src="\img\bg_red.jpg" className="h-screen" />
       </div>
     </div>
   );

@@ -16,7 +16,7 @@ function Image() {
       <hr />
       <div className="p-12">
         <p className="pb-12 flex items-center justify-center">
-          <img src=".\src\assets\soal1.png" className="w-[150px]" />
+          <img src="\img\soal1.png" className="w-[150px]" />
         </p>
         <div className="grid grid-cols-2 gap-4">
           {["a", "b", "c", "d", "e"].map((option, index) => (
