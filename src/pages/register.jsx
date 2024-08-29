@@ -156,7 +156,7 @@ function Register() {
             </div>
           </form>
 
-          <div className="flex flex-col items-center gap-2 justify-center">
+          <div className="flex flex-col items-center gap-2 py-2 justify-center">
             <button
               className="bg-red-600 w-full py-2 mt-4 text-white rounded-xl hover:bg-red-700"
               onClick={(e) => {
