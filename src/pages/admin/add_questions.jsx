@@ -102,7 +102,7 @@ function QuestionForm() {
   );
 }
 
-function DashboardAdmin() {
+function AddQuestions() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
@@ -129,7 +129,7 @@ function DashboardAdmin() {
 
             {/* Question Form */}
             <QuestionForm />
-            <QuestionForm />
+            
             {/* Add more QuestionForm components as needed */}
           </div>
         </main>
@@ -138,4 +138,4 @@ function DashboardAdmin() {
   );
 }
 
-export default DashboardAdmin;
+export default AddQuestions;

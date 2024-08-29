@@ -28,7 +28,6 @@ function Questions() {
       </nav>
     );
   }
-
   return (
     <div className="flex flex-col maxsm:bg-gray-100">
       <Header sidebarOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
@@ -40,7 +39,7 @@ function Questions() {
         {/* Main Content */}
         <main className="flex-grow lg:ml-[250px] p-8 mt-[63px] lg:mt-20 z-10">
           <div className="bg-white shadow-lg rounded-lg p-6">
-            <div className="bg-red-600 hover:bg-red-700 px-6 py-2 text-white text-center py-3 mb-6 rounded-2xl shadow">
+            <div className="bg-red-600 hover:bg-red-700 px-6 text-white text-center py-3 mb-6 rounded-2xl shadow">
               <button
                 className="flex items-center w-full justify-between"
                 onClick={(e) => navigate("/AddQuestions")}
@@ -54,7 +53,7 @@ function Questions() {
               <Card
                 title="Tes Sinonim"
                 totalQuestions={40}
-                duration="15 Menit" 
+                duration="15 Menit"
               />
               <Card
                 title="Tes Antonim"
