@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
   const navigate = useNavigate();
+  const point = useSelector((state) => state.question.point.pointTotal);
+  useEffect(() => {
+    console.log("point", point);
+  }, []);
   // Fungsi untuk mendapatkan nama hari dalam bahasa Indonesia
   const getDayName = (dayIndex) => {
     const days = [
@@ -77,10 +82,14 @@ function Dashboard() {
   return (
     <div className="">
       {/* Content  */}
-      <div className="flex flex-col items-center justify-center h-screen gap-4">
-        <img src=".\src\assets\logo-center.svg" alt="" className="w-[25%]" />
-        <div className="bg-white flex flex-col items-center rounded-xl w-[50%] py-12 px-16 shadow-xl">
-          <p className="text-4xl">
+      <div className="container mx-auto flex flex-col items-center justify-center p-3 h-screen gap-4">
+        <img
+          src=".\src\assets\logo-center.svg"
+          alt=""
+          className="w-[25%] max-lg:w-[50%]"
+        />
+        <div className="flex flex-col bg-white   items-center rounded-xl w-[50%] max-lg:w-[80%] text-center max-lg:text-sm py-12 max-lg:py-6 px-16 max-lg:px-2 shadow-xl">
+          <p className="text-4xl max-lg:text-2xl">
             <strong>Terima Kasih</strong>
           </p>
           <p className="m-4 text-center">
@@ -93,10 +102,10 @@ function Dashboard() {
             <p>|</p>
             <p>{time}</p>
           </div>
-          <div className="p-8  border border-black  rounded m-4">
+          <div className="p-8 text-center  border border-black  rounded m-4">
             <p>Nilai Anda</p>
             <p className="text-center text-2xl">
-              <strong>90</strong>
+              <strong>{point}</strong>
             </p>
           </div>
         </div>

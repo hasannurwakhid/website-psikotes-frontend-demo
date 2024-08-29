@@ -13,6 +13,7 @@ export const login = (data, navigate) => async (dispatch, getState) => {
         },
       }
     );
+    console.log("response", response);
     const user = response.data.data.user;
     console.log("user action", user);
     const token = response.data.data.token;
