@@ -96,7 +96,7 @@ function Dashboard() {
       {/* Content  */}
       <div className="container mx-auto flex flex-col items-center justify-center p-3 h-screen gap-4">
         <img
-          src=".\src\assets\logo-center.svg"
+          src="\img\logo-center.svg"
           alt=""
           className="w-[25%] max-lg:w-[50%]"
         />
