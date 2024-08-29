@@ -36,9 +36,9 @@ function Login() {
   return (
     <div className="flex bg-white">
       {/* Sisi Kiri  */}
-      <div className="container mx-auto my-auto w-[720px] lg:px-16 max-sm:px-12 md:px-32 max-sm:pt-5 lg:pt-10 md:pt-7 flex flex-col justify-center h-screen">
+      <div className="container mx-auto my-auto w-[720px] lg:px-16 max-sm:px-5 md:px-32 max-sm:pt-5 lg:pt-10 md:pt-7 flex flex-col justify-center h-screen">
         <div className="m-4">
-          <img src="\img\logo.svg" className="w-[70%]" />
+          <img src="\img\logo.svg" className="sm:w-[70%]" />
           <div className="mt-4 mb-6 flex flex-col gap-2">
             <p className="text-red-600 text-3xl">
               <strong>Selamat Datang,</strong>

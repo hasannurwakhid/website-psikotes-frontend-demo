@@ -41,7 +41,7 @@ function Register() {
   return (
     <div className="flex bg-white">
       {/* Sisi Kiri  */}
-      <div className="w-[720px] max-lg:my-8 lg:px-16 max-sm:px-12 md:px-40 max-sm:pt-5 md:pt-7 flex flex-col justify-center h-screen">
+      <div className="w-[720px] max-lg:my-8 lg:px-16 max-sm:px-5 md:px-40 max-sm:pt-5 md:pt-7 flex flex-col justify-center h-screen">
         <div className="m-4">
           <img src="\img\logo.svg" className="w-[70%]" />
           <div className="mt-3 mb-3 flex flex-col gap-2">
