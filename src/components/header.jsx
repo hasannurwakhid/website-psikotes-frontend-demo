@@ -31,7 +31,7 @@ function Header({ sidebarOpen, toggleSidebar }) {
   };
 
   return (
-    <div className="fixed z-50 w-full bg-white shadow-md">
+    <div className="fixed z-30 w-full bg-white shadow-md">
       <div className="container mx-auto flex lg:py-2 px-6">
         {/* Only show the open button when sidebar is closed */}
         {!sidebarOpen && (
