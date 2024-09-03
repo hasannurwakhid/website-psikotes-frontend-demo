@@ -2,15 +2,23 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getPesertaQuestion } from "../../redux/actions/questAction";
+import { checkIsDone, getUserProfile } from "../../redux/actions/authActions";
 
 function Dashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const token = useSelector((state) => state.auth.token);
+  const token = useSelector((state) => state?.auth?.token);
+  const isDone = useSelector((state) => state?.auth?.profil?.isDone);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+
+  useEffect(() => {
+    if (token) {
+      dispatch(getUserProfile());
+    }
+  }, [dispatch, navigate]);
 
   // Fungsi untuk mendapatkan nama hari dalam bahasa Indonesia
   const getDayName = (dayIndex) => {
@@ -56,36 +64,11 @@ function Dashboard() {
     return `${dayName}, ${day} ${monthName} ${year}`;
   };
 
-  // Fungsi untuk menambahkan angka nol di depan jika angka kurang dari 10
-  const padZero = (number) => {
-    return number < 10 ? `0${number}` : number;
-  };
-
-  // Fungsi untuk mendapatkan format waktu
-  const formatTime = () => {
-    const today = new Date();
-    const hours = padZero(today.getHours());
-    const minutes = padZero(today.getMinutes());
-    const seconds = padZero(today.getSeconds());
-
-    return `${hours} : ${minutes} : ${seconds}`;
-  };
-
-  const [time, setTime] = useState(formatTime());
-
-  useEffect(() => {
-    // Update waktu setiap detik
-    const interval = setInterval(() => {
-      setTime(formatTime());
-    }, 1000);
-
-    // Cleanup interval saat komponen di-unmount
-    return () => clearInterval(interval);
-  }, []);
-
   const handleClick = async (e) => {
     if (token === null) {
       navigate("/login");
+    } else if (isDone === true) {
+      navigate("/result");
     } else {
       openModal();
     }
@@ -96,32 +79,30 @@ function Dashboard() {
       {/* Content  */}
       <div className="container mx-auto flex flex-col items-center justify-center p-3 h-screen gap-4">
         <img
-          src=".\src\assets\logo-center.svg"
+          src="\img\logo-center.svg"
           alt=""
-          className="w-[25%] max-lg:w-[50%]"
+          className="w-[25%] max-lg:w-[65%]"
         />
-        <div className="flex flex-col bg-white   items-center rounded-xl w-[50%] max-lg:w-[80%] text-center max-lg:text-sm py-12 max-lg:py-6 px-16 max-lg:px-2 shadow-xl">
+        <div className="flex flex-col bg-white   items-center rounded-xl w-[50%] max-lg:w-[88%] text-center max-lg:text-sm py-12 max-lg:py-6 px-16 max-lg:px-2 shadow-xl">
           <p className="text-4xl max-lg:text-2xl">
             <strong>Selamat Datang,</strong>
           </p>
           <p className="text-4xl max-lg:text-2xl ">
             <strong>Peserta Seleksi Tahap Psikotes</strong>
           </p>
-          <p className="m-4 ">
+          <p className="mx-4 mt-3 mb-2 ">
             Selamat Anda telah sampai pada seleksi tahap psikotes Dinas
             Kependudukan Dan Pencatatan Sipil Kota Semarang. Anda akan
             mengerjakan sebanyak <strong>90 Soal</strong> dibagi dalam beberapa
             sub-test.
           </p>
           <p className="pb-6">Selamat Mengerjakan</p>
-          <div className="flex bg-red-200 py-3 px-4 rounded-xl gap-4">
+          <div className="px-8 py-3 text-center bg-red-200 rounded mx-4 my-2">
             <p>{formatDate()}</p>
-            <p>|</p>
-            <p>{time}</p>
           </div>
-          <div className="mt-5">
-            <p>Total Waktu Pengerjaan</p>
-            <p>
+          <div className="px-8 py-4 text-center flex flex-col gap-1 rounded mx-4">
+            <p className="text-sm">Durasi Pengerjaan</p>
+            <p className="text-center text-xl">
               <strong>1 jam 30 Menit</strong>
             </p>
           </div>

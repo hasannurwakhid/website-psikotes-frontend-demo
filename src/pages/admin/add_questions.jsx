@@ -129,7 +129,7 @@ function AddQuestions() {
 
             {/* Question Form */}
             <QuestionForm />
-            <QuestionForm />
+            
             {/* Add more QuestionForm components as needed */}
           </div>
         </main>
