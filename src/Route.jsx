@@ -1,9 +1,13 @@
 import Login from "./pages/login.jsx";
+import LoginAdmin from "./pages/login_admin.jsx";
 import Register from "./pages/register.jsx";
 import Dashboard from "./pages/user/dashboard.jsx";
 import Question from "./pages/user/question.jsx";
 import Result from "./pages/user/result.jsx";
 import AddAcc from "./pages/admin/add_acc.jsx";
+import DashboardAdmin from "./pages/admin/dashboard.jsx";
+import QuestCategory from "./pages/admin/questCategory.jsx";
+import EditQuestions from "./pages/admin/editQuestions.jsx";
 import {
   BrowserRouter as Router,
   Routes,
@@ -14,9 +18,6 @@ import { Provider } from "react-redux";
 import { persistor, store } from "./redux/store.js";
 import { PersistGate } from "redux-persist/integration/react";
 import { ToastContainer } from "react-toastify";
-import DashboardAdmin from "./pages/admin/dashboard.jsx";
-import Questions from "./pages/admin/questions.jsx";
-import AddQuestions from "./pages/admin/add_questions.jsx";
 
 function App() {
   return (
@@ -27,12 +28,13 @@ function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/AddAcc" element={<AddAcc />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/LoginAdmin" element={<LoginAdmin />} />
             <Route path="/register" element={<Register />} />
             <Route path="/quest" element={<Question />} />
             <Route path="/result" element={<Result />} />
             <Route path="/DashboardAdmin" element={<DashboardAdmin />} />
-            <Route path="/questions" element={<Questions />} />
-            <Route path="/AddQuestions" element={<AddQuestions />} />
+            <Route path="/QuestCategory" element={<QuestCategory />} />
+            <Route path="/EditQuestions/:id" element={<EditQuestions />} />
             {/* other routes */}
           </Routes>
           <ToastContainer

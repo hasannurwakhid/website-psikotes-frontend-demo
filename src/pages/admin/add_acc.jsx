@@ -1,44 +1,134 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import ReactDOM from "react-dom";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  admin,
+  addAdmin,
+  updateAdmin,
+  deleteAdmin,
+} from "../../redux/actions/allAdminActions";
 import Header from "../../components/header";
 import Sidebar from "../../components/sidebar";
 
+function Modal({ isOpen, onClose, children }) {
+  if (!isOpen) return null;
+
+  return ReactDOM.createPortal(
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-96 relative">
+        <button
+          className="absolute top-1 right-3 text-gray-500 text-2xl hover:text-red-700 z-50"
+          onClick={onClose}
+        >
+          &times;
+        </button>
+        {children}
+      </div>
+    </div>,
+    document.body // Memastikan modal dirender di luar hierarki DOM komponen
+  );
+}
+
 function AddAcc() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isAddAccOpen, setIsAddAccOpen] = useState(false);
   const [isEditAccOpen, setIsEditAccOpen] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const dispatch = useDispatch();
+  const token = useSelector((state) => state.allAdmin.token);
+  const admins = useSelector((state) => state.allAdmin.admins);
+  const [nip, setNip] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showEditPassword, setShowEditPassword] = useState(false);
+  const [selectedAdmin, setSelectedAdmin] = useState(null);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
+  };
+
+  const toggleAddAcc = () => {
+    setIsAddAccOpen(!isAddAccOpen);
   };
 
   const toggleEditAcc = () => {
     setIsEditAccOpen(!isEditAccOpen);
   };
 
-  const closeEditAcc = () => {
-    setIsEditAccOpen(false);
-  };
-
   const toggleConfirm = () => {
     setIsConfirmOpen(!isConfirmOpen);
   };
 
-  const closeConfirm = () => {
-    setIsConfirmOpen(false);
+  const toggleShowPassword = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+
+  const toggleShowEditPassword = () => {
+    setShowEditPassword((prevShowEditPassword) => !prevShowEditPassword);
+  };
+
+  useEffect(() => {
+    dispatch(admin(token));
+  }, []);
+
+  useEffect(() => {
+    console.log("Admin from redux store:", admins);
+  }, []);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    let data = {
+      nip,
+      name,
+      email,
+      phoneNumber,
+      password,
+    };
+    dispatch(addAdmin(data));
+    dispatch(admin(token));
+    setIsAddAccOpen(false);
+  };
+
+  const handleEditSubmit = (e) => {
+    e.preventDefault();
+    if (selectedAdmin) {
+      const data = {
+        nip: selectedAdmin.nip,
+        name: selectedAdmin.name,
+        email: selectedAdmin.email,
+        phoneNumber: selectedAdmin.phoneNumber,
+        password: selectedAdmin.password,
+      };
+      dispatch(updateAdmin(selectedAdmin.id, data));
+      dispatch(admin(token));
+      toggleEditAcc(); // Menutup modal setelah penyimpanan
+    }
+  };
+
+  const handleEditClick = (admin) => {
+    setSelectedAdmin({
+      ...admin,
+    });
+    toggleEditAcc();
+  };
+
+  const handleDeleteClick = () => {
+    if (selectedAdmin) {
+      dispatch(deleteAdmin(selectedAdmin.id, token));
+      dispatch(admin(token));
+      toggleConfirm();
+    }
   };
 
   return (
     <div className="flex flex-col max-sm:bg-gray-100">
       <Header sidebarOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
-      {/* Sidebar and Main Content */}
       <div className="relative flex flex-grow">
-        {/* Sidebar */}
-        <Sidebar sidebarOpen={sidebarOpen} toggleSidebar={toggleSidebar}/>
-
-        {/* Main Content */}
+        <Sidebar sidebarOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
         <main className="flex-grow lg:ml-[250px] p-8 mt-[63px] lg:mt-20 z-10">
-          {" "}
-          {/* Added z-index for main content */}
           <div className="bg-white shadow-lg rounded-lg p-6">
             <header className="flex justify-between items-center mb-6">
               <div className="flex-1 text-left">
@@ -74,7 +164,7 @@ function AddAcc() {
               </div>
               <button
                 className="bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-700"
-                onClick={toggleEditAcc}
+                onClick={toggleAddAcc}
               >
                 Tambah akun
               </button>
@@ -83,330 +173,70 @@ function AddAcc() {
             <table className="min-w-full text-left">
               <thead>
                 <tr>
+                  <th className="py-3 px-6 font-medium text-gray-600">NIP</th>
                   <th className="py-3 px-6 font-medium text-gray-600">Nama</th>
                   <th className="py-3 px-6 font-medium text-gray-600">
                     Alamat Email
                   </th>
                   <th className="py-3 px-6 font-medium text-gray-600">
-                    Pilihan
+                    Detail
                   </th>
+                  <th className="py-3 px-6 font-medium text-gray-600">Hapus</th>
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-t">
-                  <td className="py-3 px-6">abcde fghih klmno</td>
-                  <td className="py-3 px-6">abcdefghijklmno@gmail.com</td>
-                  <td className="py-3 px-6 flex items-center space-x-3">
-                    <button
-                      className="text-gray-500 hover:text-red-700"
-                      onClick={toggleEditAcc}
-                    >
-                      <svg
-                        className="h-5 w-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
+                {admins.map((admin, index) => (
+                  <tr key={index} className="border-b">
+                    <td className="py-3 px-6">{admin.nip}</td>
+                    <td className="py-3 px-6">{admin.name}</td>
+                    <td className="py-3 px-6">{admin.email}</td>
+                    <td className="py-3 px-9">
+                      <button
+                        className="text-gray-500 hover:text-red-700"
+                        onClick={() => handleEditClick(admin)}
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M11 5H7a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M15.586 4.586a2 2 0 112.828 2.828L10 15.828l-4 1 1-4 8.586-8.586z"
-                        />
-                      </svg>
-                    </button>
-                    <button
-                      className="text-gray-500 hover:text-red-700"
-                      onClick={toggleConfirm}
-                    >
-                      <svg
-                        className="h-5 w-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
+                        <svg
+                          className="h-6 w-6"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M11 5H7a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M15.586 4.586a2 2 0 112.828 2.828L10 15.828l-4 1 1-4 8.586-8.586z"
+                          />
+                        </svg>
+                      </button>
+                    </td>
+                    <td className="py-3 px-9">
+                      <button
+                        className="text-gray-500 hover:text-red-700"
+                        onClick={() => {
+                          setSelectedAdmin(admin);
+                          toggleConfirm();
+                        }}
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
-                    </button>
-                  </td>
-                </tr>
-                <tr className="border-t"></tr>
-                <tr className="border-t">
-                  <td className="py-3 px-6">abcde fghih klmno</td>
-                  <td className="py-3 px-6">abcdefghijklmno@gmail.com</td>
-                  <td className="py-3 px-6 flex items-center space-x-3">
-                    <button
-                      className="text-gray-500 hover:text-red-700"
-                      onClick={toggleEditAcc}
-                    >
-                      <svg
-                        className="h-5 w-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M11 5H7a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M15.586 4.586a2 2 0 112.828 2.828L10 15.828l-4 1 1-4 8.586-8.586z"
-                        />
-                      </svg>
-                    </button>
-                    <button
-                      className="text-gray-500 hover:text-red-700"
-                      onClick={toggleConfirm}
-                    >
-                      <svg
-                        className="h-5 w-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
-                    </button>
-                  </td>
-                </tr>
-                <tr className="border-t"></tr>
-                <tr className="border-t">
-                  <td className="py-3 px-6">abcde fghih klmno</td>
-                  <td className="py-3 px-6">abcdefghijklmno@gmail.com</td>
-                  <td className="py-3 px-6 flex items-center space-x-3">
-                    <button
-                      className="text-gray-500 hover:text-red-700"
-                      onClick={toggleEditAcc}
-                    >
-                      <svg
-                        className="h-5 w-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M11 5H7a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M15.586 4.586a2 2 0 112.828 2.828L10 15.828l-4 1 1-4 8.586-8.586z"
-                        />
-                      </svg>
-                    </button>
-                    <button
-                      className="text-gray-500 hover:text-red-700"
-                      onClick={toggleConfirm}
-                    >
-                      <svg
-                        className="h-5 w-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
-                    </button>
-                  </td>
-                </tr>
-                <tr className="border-t"></tr>
-                <tr className="border-t">
-                  <td className="py-3 px-6">abcde fghih klmno</td>
-                  <td className="py-3 px-6">abcdefghijklmno@gmail.com</td>
-                  <td className="py-3 px-6 flex items-center space-x-3">
-                    <button
-                      className="text-gray-500 hover:text-red-700"
-                      onClick={toggleEditAcc}
-                    >
-                      <svg
-                        className="h-5 w-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M11 5H7a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M15.586 4.586a2 2 0 112.828 2.828L10 15.828l-4 1 1-4 8.586-8.586z"
-                        />
-                      </svg>
-                    </button>
-                    <button
-                      className="text-gray-500 hover:text-red-700"
-                      onClick={toggleConfirm}
-                    >
-                      <svg
-                        className="h-5 w-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
-                    </button>
-                  </td>
-                </tr>
-                <tr className="border-t"></tr>
-                <tr className="border-t">
-                  <td className="py-3 px-6">abcde fghih klmno</td>
-                  <td className="py-3 px-6">abcdefghijklmno@gmail.com</td>
-                  <td className="py-3 px-6 flex items-center space-x-3">
-                    <button
-                      className="text-gray-500 hover:text-red-700"
-                      onClick={toggleEditAcc}
-                    >
-                      <svg
-                        className="h-5 w-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M11 5H7a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M15.586 4.586a2 2 0 112.828 2.828L10 15.828l-4 1 1-4 8.586-8.586z"
-                        />
-                      </svg>
-                    </button>
-                    <button
-                      className="text-gray-500 hover:text-red-700"
-                      onClick={toggleConfirm}
-                    >
-                      <svg
-                        className="h-5 w-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
-                    </button>
-                  </td>
-                </tr>
-                <tr className="border-t"></tr>
-                <tr className="border-t">
-                  <td className="py-3 px-6">abcde fghih klmno</td>
-                  <td className="py-3 px-6">abcdefghijklmno@gmail.com</td>
-                  <td className="py-3 px-6 flex items-center space-x-3">
-                    <button
-                      className="text-gray-500 hover:text-red-700"
-                      onClick={toggleEditAcc}
-                    >
-                      <svg
-                        className="h-5 w-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M11 5H7a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M15.586 4.586a2 2 0 112.828 2.828L10 15.828l-4 1 1-4 8.586-8.586z"
-                        />
-                      </svg>
-                    </button>
-                    <button
-                      className="text-gray-500 hover:text-red-700"
-                      onClick={toggleConfirm}
-                    >
-                      <svg
-                        className="h-5 w-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
-                    </button>
-                  </td>
-                </tr>
-                <tr className="border-t"></tr>
-                <tr className="border-t">
-                  <td className="py-3 px-6">abcde fghih klmno</td>
-                  <td className="py-3 px-6">abcdefghijklmno@gmail.com</td>
-                  <td className="py-3 px-6 flex items-center space-x-3">
-                    <button
-                      className="text-gray-500 hover:text-red-700"
-                      onClick={toggleEditAcc}
-                    >
-                      <svg
-                        className="h-5 w-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M11 5H7a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M15.586 4.586a2 2 0 112.828 2.828L10 15.828l-4 1 1-4 8.586-8.586z"
-                        />
-                      </svg>
-                    </button>
-                    <button
-                      className="text-gray-500 hover:text-red-700"
-                      onClick={toggleConfirm}
-                    >
-                      <svg
-                        className="h-5 w-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
-                    </button>
-                  </td>
-                </tr>
+                        <svg
+                          className="h-5 w-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m2 0v14a2 2 0 01-2 2H8a2 2 0 01-2-2V6h12z"
+                          />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                ))}
                 <tr className="border-t"></tr>
               </tbody>
             </table>
@@ -425,92 +255,252 @@ function AddAcc() {
               </div>
             </div>
           </div>
-          
-          {isEditAccOpen && (
-            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-40">
-              <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-                <button
-                  className="absolute top-2 right-2 text-gray-500"
-                  onClick={toggleEditAcc}
-                >
-                  &times;
-                </button>
+
+          {/* Add Account Modal */}
+          <Modal isOpen={isAddAccOpen} onClose={toggleAddAcc}>
+            <form className="pt-4" onSubmit={handleSubmit}>
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  NIP
+                </label>
+                <input
+                  type="text"
+                  placeholder="NIP"
+                  onChange={(e) => setNip(e.target.value)}
+                  className="border rounded-lg px-4 py-2 w-full"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Nama
+                </label>
+                <input
+                  type="text"
+                  placeholder="Nama"
+                  onChange={(e) => setName(e.target.value)}
+                  className="border rounded-lg px-4 py-2 w-full"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  placeholder="Email"
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="border rounded-lg px-4 py-2 w-full"
+                  autoComplete="email"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  No Telp
+                </label>
+                <input
+                  type="phoneNumber"
+                  placeholder="No Telp"
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  className="border rounded-lg px-4 py-2 w-full"
+                  autoComplete="phoneNumber"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Password
+                </label>
                 <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="border rounded-lg px-4 py-2 w-full"
+                    autoComplete="current-password"
+                    required
+                  />
                   <button
-                    className="absolute top=0 right-0 text-gray-500 hover:text-red-700"
-                    onClick={closeEditAcc}
+                    type="button"
+                    onClick={toggleShowPassword}
+                    className="absolute inset-y-0 right-2 flex items-center text-gray-500 hover:text-red-700"
                   >
-                    <svg
-                      className="h-5 w-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
+                    {showPassword ? (
+                      <svg
+                        fill="black"
+                        className="w-4 h-4 hover:fill-black"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 640 512"
+                      >
+                        <path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zm151 118.3C226 97.7 269.5 80 320 80c65.2 0 118.8 29.6 159.9 67.7C518.4 183.5 545 226 558.6 256c-12.6 28-36.6 66.8-70.9 100.9l-53.8-42.2c9.1-17.6 14.2-37.5 14.2-58.7c0-70.7-57.3-128-128-128c-32.2 0-61.7 11.9-84.2 31.5l-46.1-36.1zM394.9 284.2l-81.5-63.9c4.2-8.5 6.6-18.2 6.6-28.3c0-5.5-.7-10.9-2-16c.7 0 1.3 0 2 0c44.2 0 80 35.8 80 80c0 9.9-1.8 19.4-5.1 28.2zm51.3 163.3l-41.9-33C378.8 425.4 350.7 432 320 432c-65.2 0-118.8-29.6-159.9-67.7C121.6 328.5 95 286 81.4 256c8.3-18.4 21.5-41.5 39.4-64.8L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5zm-88-69.3L302 334c-23.5-5.4-43.1-21.2-53.7-42.3l-56.1-44.2c-.2 2.8-.3 5.6-.3 8.5c0 70.7 57.3 128 128 128c13.3 0 26.1-2 38.2-5.8z" />
+                      </svg>
+                    ) : (
+                      <svg
+                        fill="black"
+                        className="w-4 hover:fill-black"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 576 512"
+                      >
+                        <path d="M288 80c-65.2 0-118.8 29.6-159.9 67.7C89.6 183.5 63 226 49.4 256c13.6 30 40.2 72.5 78.6 108.3C169.2 402.4 222.8 432 288 432s118.8-29.6 159.9-67.7C486.4 328.5 513 286 526.6 256c-13.6-30-40.2-72.5-78.6-108.3C406.8 109.6 353.2 80 288 80zM95.4 112.6C142.5 68.8 207.2 32 288 32s145.5 36.8 192.6 80.6c46.8 43.5 78.1 95.4 93 131.1c3.3 7.9 3.3 16.7 0 24.6c-14.9 35.7-46.2 87.7-93 131.1C433.5 443.2 368.8 480 288 480s-145.5-36.8-192.6-80.6C48.6 356 17.3 304 2.5 268.3c-3.3-7.9-3.3-16.7 0-24.6C17.3 208 48.6 156 95.4 112.6zM288 336c44.2 0 80-35.8 80-80s-35.8-80-80-80c-.7 0-1.3 0-2 0c1.3 5.1 2 10.5 2 16c0 35.3-28.7 64-64 64c-5.5 0-10.9-.7-16-2c0 .7 0 1.3 0 2c0 44.2 35.8 80 80 80zm0-208a128 128 0 1 1 0 256 128 128 0 1 1 0-256z" />
+                      </svg>
+                    )}
                   </button>
-                  <form className="pt-4">
-                    <div className="mb-4">
-                      <label className="block text-gray-700 text-sm font-bold mb-2">
-                        Nama
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Nama"
-                        className="border rounded-lg px-4 py-2 w-full"
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <label className="block text-gray-700 text-sm font-bold mb-2">
-                        Email
-                      </label>
-                      <input
-                        type="email"
-                        placeholder="Email"
-                        className="border rounded-lg px-4 py-2 w-full"
-                      />
-                    </div>
+                </div>
+              </div>
+              <button
+                type="submit"
+                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+              >
+                Simpan
+              </button>
+            </form>
+          </Modal>
+
+          {/* Edit Account Modal */}
+          <Modal isOpen={isEditAccOpen} onClose={toggleEditAcc}>
+            {selectedAdmin && (
+              <form className="pt-4" onSubmit={handleEditSubmit}>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    NIP
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="NIP"
+                    value={selectedAdmin.nip}
+                    onChange={(e) =>
+                      setSelectedAdmin({
+                        ...selectedAdmin,
+                        nip: e.target.value,
+                      })
+                    }
+                    className="border rounded-lg px-4 py-2 w-full"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Nama
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Nama"
+                    value={selectedAdmin.name}
+                    onChange={(e) =>
+                      setSelectedAdmin({
+                        ...selectedAdmin,
+                        name: e.target.value,
+                      })
+                    }
+                    className="border rounded-lg px-4 py-2 w-full"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    value={selectedAdmin.email}
+                    onChange={(e) =>
+                      setSelectedAdmin({
+                        ...selectedAdmin,
+                        email: e.target.value,
+                      })
+                    }
+                    className="border rounded-lg px-4 py-2 w-full"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    No Telp
+                  </label>
+                  <input
+                    type="phoneNumber"
+                    placeholder="No Telpm"
+                    value={selectedAdmin.phoneNumber}
+                    onChange={(e) =>
+                      setSelectedAdmin({
+                        ...selectedAdmin,
+                        phoneNumber: e.target.value,
+                      })
+                    }
+                    className="border rounded-lg px-4 py-2 w-full"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showEditPassword ? "text" : "password"}
+                      placeholder="Password"
+                      onChange={(e) =>
+                        setSelectedAdmin({
+                          ...selectedAdmin,
+                          password: e.target.value,
+                        })
+                      }
+                      className="border rounded-lg px-4 py-2 w-full"
+                    />
                     <button
-                      type="submit"
-                      className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+                      type="button"
+                      onClick={toggleShowEditPassword}
+                      className="absolute inset-y-0 right-2 flex items-center text-gray-500 hover:text-red-700"
                     >
-                      Simpan
+                      {showEditPassword ? (
+                        <svg
+                          fill="black"
+                          className="w-4 h-4 hover:fill-black"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 640 512"
+                        >
+                          <path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zm151 118.3C226 97.7 269.5 80 320 80c65.2 0 118.8 29.6 159.9 67.7C518.4 183.5 545 226 558.6 256c-12.6 28-36.6 66.8-70.9 100.9l-53.8-42.2c9.1-17.6 14.2-37.5 14.2-58.7c0-70.7-57.3-128-128-128c-32.2 0-61.7 11.9-84.2 31.5l-46.1-36.1zM394.9 284.2l-81.5-63.9c4.2-8.5 6.6-18.2 6.6-28.3c0-5.5-.7-10.9-2-16c.7 0 1.3 0 2 0c44.2 0 80 35.8 80 80c0 9.9-1.8 19.4-5.1 28.2zm51.3 163.3l-41.9-33C378.8 425.4 350.7 432 320 432c-65.2 0-118.8-29.6-159.9-67.7C121.6 328.5 95 286 81.4 256c8.3-18.4 21.5-41.5 39.4-64.8L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5zm-88-69.3L302 334c-23.5-5.4-43.1-21.2-53.7-42.3l-56.1-44.2c-.2 2.8-.3 5.6-.3 8.5c0 70.7 57.3 128 128 128c13.3 0 26.1-2 38.2-5.8z" />
+                        </svg>
+                      ) : (
+                        <svg
+                          fill="black"
+                          className="w-4 hover:fill-black"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 576 512"
+                        >
+                          <path d="M288 80c-65.2 0-118.8 29.6-159.9 67.7C89.6 183.5 63 226 49.4 256c13.6 30 40.2 72.5 78.6 108.3C169.2 402.4 222.8 432 288 432s118.8-29.6 159.9-67.7C486.4 328.5 513 286 526.6 256c-13.6-30-40.2-72.5-78.6-108.3C406.8 109.6 353.2 80 288 80zM95.4 112.6C142.5 68.8 207.2 32 288 32s145.5 36.8 192.6 80.6c46.8 43.5 78.1 95.4 93 131.1c3.3 7.9 3.3 16.7 0 24.6c-14.9 35.7-46.2 87.7-93 131.1C433.5 443.2 368.8 480 288 480s-145.5-36.8-192.6-80.6C48.6 356 17.3 304 2.5 268.3c-3.3-7.9-3.3-16.7 0-24.6C17.3 208 48.6 156 95.4 112.6zM288 336c44.2 0 80-35.8 80-80s-35.8-80-80-80c-.7 0-1.3 0-2 0c1.3 5.1 2 10.5 2 16c0 35.3-28.7 64-64 64c-5.5 0-10.9-.7-16-2c0 .7 0 1.3 0 2c0 44.2 35.8 80 80 80zm0-208a128 128 0 1 1 0 256 128 128 0 1 1 0-256z" />
+                        </svg>
+                      )}
                     </button>
-                  </form>
+                  </div>
                 </div>
-              </div>
-            </div>
-          )}
-          {isConfirmOpen && (
-            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-40">
-              <div className="bg-white p-6 rounded-lg shadow-lg w-96">
                 <button
-                  className="absolute top-2 right-2 text-gray-500"
-                  onClick={toggleConfirm}
+                  type="submit"
+                  className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
                 >
-                  &times;
+                  Simpan
                 </button>
-                <p>Apakah Anda yakin ingin menghapus akun ini?</p>
-                <div className="flex justify-end mt-4">
-                  <button
-                    className="mr-2 bg-gray-200 text-gray-700 px-4 py-2 rounded-lg"
-                    onClick={closeConfirm}
-                  >
-                    Batal
-                  </button>
-                  <button type="submit" className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">
-                    Hapus
-                  </button>
-                </div>
-              </div>
+              </form>
+            )}
+          </Modal>
+
+          {/* Confirm Delete Modal */}
+          <Modal isOpen={isConfirmOpen} onClose={toggleConfirm}>
+            <p>Apakah Anda yakin ingin menghapus akun ini?</p>
+            <div className="flex justify-end mt-4">
+              <button
+                className="mr-2 bg-gray-200 text-gray-700 px-4 py-2 rounded-lg"
+                onClick={toggleConfirm}
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleDeleteClick}
+                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+              >
+                Hapus
+              </button>
             </div>
-          )}
+          </Modal>
         </main>
       </div>
     </div>
