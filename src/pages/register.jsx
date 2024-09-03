@@ -1,30 +1,116 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { register } from "../redux/actions/authActions";
 import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 
 function Register() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [nik, setNik] = useState();
-  const [name, setNama] = useState();
-  const [email, setEmail] = useState();
-  const [phoneNumber, setphoneNumber] = useState();
-  const [password, setPassword] = useState();
-  const [confirmPassword, setconfirmPassword] = useState();
+  const [nik, setNik] = useState("");
+  const [name, setNama] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const toggleShowPassword = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
   const toggleShowConfirmPassword = () => {
-    setShowConfirmPassword((prevShowPassword) => !prevShowPassword);
+    setShowConfirmPassword(
+      (prevShowConfirmPassword) => !prevShowConfirmPassword
+    );
+  };
+
+  const handleNikChange = (e) => {
+    setNik(e.target.value);
+    setErrors((prevErrors) => ({ ...prevErrors, nik: "" })); // Clear NIK error when the user starts typing
+  };
+
+  const handleNameChange = (e) => {
+    setNama(e.target.value);
+    setErrors((prevErrors) => ({ ...prevErrors, name: "" })); // Clear Name error when the user starts typing
+  };
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+    setErrors((prevErrors) => ({ ...prevErrors, email: "" })); // Clear Email error when the user starts typing
+  };
+
+  const handlePhoneNumberChange = (e) => {
+    setPhoneNumber(e.target.value);
+    setErrors((prevErrors) => ({ ...prevErrors, phoneNumber: "" })); // Clear Phone Number error when the user starts typing
+  };
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+    setErrors((prevErrors) => ({ ...prevErrors, password: "" })); // Clear Password error when the user starts typing
+  };
+
+  const handleConfirmPasswordChange = (e) => {
+    setConfirmPassword(e.target.value);
+    setErrors((prevErrors) => ({ ...prevErrors, confirmPassword: "" })); // Clear Confirm Password error when the user starts typing
+  };
+
+  const validate = () => {
+    let errors = {};
+
+    // Validasi NIK
+    if (!nik) {
+      errors.nik = "NIK harus diisi.";
+    } else if (!/^\d{16}$/.test(nik)) {
+      errors.nik = "NIK harus terdiri dari 16 angka.";
+    }
+
+    // Validasi Nama Lengkap
+    if (!name) {
+      errors.name = "Nama lengkap harus diisi.";
+    } else if (!/^[A-Za-z\s]+$/.test(name)) {
+      errors.name = "Nama hanya boleh terdiri dari huruf dan spasi.";
+    }
+
+    // Validasi Email
+    if (!email) {
+      errors.email = "Email harus diisi.";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errors.email = "Format email tidak valid.";
+    }
+
+    // Validasi Nomor Telepon
+    if (!phoneNumber) {
+      errors.phoneNumber = "Nomor telepon harus diisi.";
+    } else if (!/^\d+$/.test(phoneNumber)) {
+      errors.phoneNumber = "Nomor telepon hanya boleh terdiri dari angka.";
+    }
+
+    // Validasi Password
+    if (!password) {
+      errors.password = "Password harus diisi.";
+    } else if (!/^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password)) {
+      errors.password =
+        "Password terdiri minimal 8 karakter, 1 huruf kapital dan 1 angka.";
+    }
+
+    // Validasi Konfirmasi Password
+    if (!confirmPassword) {
+      errors.confirmPassword = "Konfirmasi password harus diisi.";
+    } else if (password !== confirmPassword) {
+      errors.confirmPassword = "Konfirmasi password tidak sesuai.";
+    }
+
+    setErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   const handleSubmit = async (e) => {
-    if (password === confirmPassword) {
+    e.preventDefault();
+
+    if (validate()) {
       let data = {
         nik,
         name,
@@ -32,18 +118,18 @@ function Register() {
         phoneNumber,
         password,
       };
-      dispatch(register(data, navigate));
+      dispatch(register(data, navigate, toast));
     } else {
-      console.log("Password salah");
+      toast.error("Perhatikan data Anda");
     }
   };
 
   return (
-    <div className="flex bg-white">
+    <div className="flex bg-white h-screen">
       {/* Sisi Kiri  */}
-      <div className="w-[720px] lg:px-16 max-sm:px-5 md:px-40 max-sm:pt-4 md:pt-7 flex flex-col justify-center max-sm:h-screen">
+      <div className="w-[720px]  lg:px-16 max-sm:px-5 md:px-40 md:pt-7 flex flex-col justify-center">
         <div className="m-4">
-          <img src="\img\logo.svg" className="w-[70%]" />
+          <img src="/img/logo.svg" className="w-[70%]" />
           <div className="mt-3 mb-3 flex flex-col gap-2">
             <p className="text-red-600 text-3xl">
               <strong>Selamat Datang,</strong>
@@ -55,44 +141,81 @@ function Register() {
               Silahkan daftarkan diri anda sebelum mengerjakan ujian psikotes
             </p>
           </div>
-          <form action="" className="flex flex-col gap-2 mt-2">
+          <form
+            action=""
+            className="flex flex-col gap-2 mt-2"
+            onSubmit={handleSubmit}
+          >
             <input
               type="text"
-              className=" bordered p-2 rounded-md border"
+              className={`bordered p-2 rounded-md border ${
+                errors.nik ? "border-red-500" : "border-gray-300"
+              }`}
               placeholder="NIK"
               value={nik}
-              onChange={(e) => setNik(e.target.value)}
+              onChange={handleNikChange}
             />
+            {errors.nik && (
+              <span className="text-red-500 text-sm mt-[-8px]">
+                {errors.nik}
+              </span>
+            )}
+
             <input
               type="text"
-              className=" bordered p-2 rounded-md border"
+              className={`bordered p-2 rounded-md border ${
+                errors.name ? "border-red-500" : "border-gray-300"
+              }`}
               placeholder="Nama Lengkap"
               value={name}
-              onChange={(e) => setNama(e.target.value)}
+              onChange={handleNameChange}
             />
+            {errors.name && (
+              <span className="text-red-500 text-sm mt-[-8px]">
+                {errors.name}
+              </span>
+            )}
+
             <input
-              type="text"
-              className=" bordered p-2 rounded-md border"
+              type="email"
+              className={`bordered p-2 rounded-md border ${
+                errors.email ? "border-red-500" : "border-gray-300"
+              }`}
               placeholder="Email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleEmailChange}
             />
+            {errors.email && (
+              <span className="text-red-500 text-sm mt-[-8px]">
+                {errors.email}
+              </span>
+            )}
+
             <input
               type="text"
-              className=" bordered p-2 rounded-md border"
+              className={`bordered p-2 rounded-md border ${
+                errors.phoneNumber ? "border-red-500" : "border-gray-300"
+              }`}
               placeholder="Nomor Telepon"
               value={phoneNumber}
-              onChange={(e) => setphoneNumber(e.target.value)}
+              onChange={handlePhoneNumberChange}
             />
+            {errors.phoneNumber && (
+              <span className="text-red-500 text-sm mt-[-8px]">
+                {errors.phoneNumber}
+              </span>
+            )}
+
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
-                className="w-full p-2 rounded-md border"
+                className={`w-full p-2 rounded-md border ${
+                  errors.password ? "border-red-500" : "border-gray-300"
+                }`}
                 placeholder="Password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={handlePasswordChange}
               />
-
               <button
                 type="button"
                 className="absolute inset-y-0 right-0 bottom-0 flex items-center px-3"
@@ -118,22 +241,28 @@ function Register() {
                   </svg>
                 )}
               </button>
+              <div className="absolute -bottom-6 text-red-500 text-sm">
+                {" "}
+                {errors.password && <span>{errors.password}</span>}
+              </div>
             </div>
-            <div className="relative">
+
+            <div className={`relative ${errors.password ? "mt-5" : ""}`}>
               <input
                 type={showConfirmPassword ? "text" : "password"}
-                className="w-full p-2 rounded-xl border"
+                className={`w-full p-2 rounded-xl border ${
+                  errors.confirmPassword ? "border-red-500" : "border-gray-300"
+                }`}
                 placeholder="Konfirmasi Password"
                 value={confirmPassword}
-                onChange={(e) => setconfirmPassword(e.target.value)}
+                onChange={handleConfirmPasswordChange}
               />
-
               <button
                 type="button"
                 className="absolute inset-y-0 right-0 bottom-0 flex items-center px-3"
                 onClick={toggleShowConfirmPassword}
               >
-                {showConfirmPassword ? (
+                {showPassword ? (
                   <svg
                     fill="black"
                     className="w-4 hover:fill-black"
@@ -153,18 +282,23 @@ function Register() {
                   </svg>
                 )}
               </button>
+              <div className="absolute -bottom-6 text-red-500 text-sm">
+                {errors.confirmPassword && (
+                  <span>{errors.confirmPassword}</span>
+                )}
+              </div>
             </div>
-          </form>
 
-          <div className="flex flex-col items-center gap-2 py-2 justify-center">
             <button
-              className="bg-red-600 w-full py-2 mt-4 text-white rounded-xl hover:bg-red-700"
-              onClick={(e) => {
-                handleSubmit();
-              }}
+              type="submit"
+              className={`bg-red-600 w-full py-2 mt-4 text-white rounded-xl
+              hover:bg-red-700 ${errors.password ? "mt-8" : ""}`}
             >
               Daftar
             </button>
+          </form>
+
+          <div className="flex flex-col items-center gap-2 py-2 justify-center">
             <button
               className="text-blue-600 hover:text-blue-700"
               onClick={() => navigate("/login")}
@@ -176,7 +310,7 @@ function Register() {
       </div>
       {/* Sisi Kanan  */}
       <div className="flex justify-start max-lg:hidden">
-        <img src="\img\bg_red.jpg" className="h-screen" />
+        <img src="/img/bg_red.jpg" className="h-full" />
       </div>
     </div>
   );

@@ -9,11 +9,11 @@ function Login() {
   const [nik, setNik] = useState();
   const [password, setPassword] = useState();
   const [showPassword, setShowPassword] = useState(false);
+  const [nikError, setNikError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
-  console.log("Token", token);
-
   useEffect(() => {
     if (token) {
       toast.error("Kamu sudah login.");
@@ -25,19 +25,43 @@ function Login() {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
+  const handleNikChange = (e) => {
+    setNik(e.target.value);
+    setNikError(""); // Clear NIK error when the user starts typing
+  };
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+    setPasswordError(""); // Clear password error when the user starts typing
+  };
+
   const handleSubmit = async (e) => {
+    e.preventDefault();
+    let hasError = false;
+
+    if (!nik || nik.trim() === "") {
+      setNikError("NIK tidak boleh kosong");
+      hasError = true;
+    }
+
+    if (!password || password.trim() === "") {
+      setPasswordError("Password tidak boleh kosong");
+      hasError = true;
+    }
+    if (hasError) return;
+
     let data = {
       nik,
       password,
     };
-    dispatch(login(data, navigate));
+    dispatch(login(data, navigate, toast));
   };
 
   return (
-    <div className="flex bg-white  h-screen">
+    <div className="flex bg-white h-screen">
       {/* Sisi Kiri  */}
-      <div className="w-[720px] lg:px-16 max-sm:px-5 md:px-40 max-sm:pt-4 md:pt-7 flex flex-col justify-center">
-        <div className="p-4">
+      <div className="w-[720px]  lg:px-16 max-sm:px-5 md:px-40 md:pt-7 flex flex-col justify-center">
+        <div className="m-4">
           <img src="\img\logo.svg" className="sm:w-[70%]" />
           <div className="">
             <div className="mt-4 mb-6 flex flex-col gap-2 ">
@@ -54,18 +78,25 @@ function Login() {
             <form action="" className="flex flex-col gap-4 sm:mt-5">
               <input
                 type="text"
-                className="p-2 rounded-md border"
+                className={`p-2 rounded-md border ${
+                  nikError ? "border-red-500" : "border-gray-300"
+                }`}
                 placeholder="NIK"
                 value={nik}
-                onChange={(e) => setNik(e.target.value)}
+                onChange={handleNikChange}
               />
+              {nikError && (
+                <p className="text-red-500 text-sm mt-[-10px]">{nikError}</p>
+              )}
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
-                  className="w-full p-2 rounded-md border"
+                  className={`w-full p-2 rounded-md border ${
+                    passwordError ? "border-red-500" : "border-gray-300"
+                  }`}
                   placeholder="Password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={handlePasswordChange}
                 />
 
                 <button
@@ -93,27 +124,20 @@ function Login() {
                     </svg>
                   )}
                 </button>
-              </div>
-
-              <div className="flex justify-between">
-                <div className="flex gap-2">
-                  <input type="checkbox" className="" />
-                  <p>Ingat saya</p>
-                </div>
-                <div className="flex gap-2">
-                  <button className="text-blue-600 hover:text-blue-700">
-                    Lupa Password
-                  </button>
+                <div className="absolute -bottom-6 text-red-500 text-sm">
+                  {passwordError && <p>{passwordError}</p>}
                 </div>
               </div>
             </form>
 
-            <div className="flex flex-col items-center gap-3 justify-center my-4">
+            <div
+              className={`flex flex-col items-center gap-3 justify-center my-4 ${
+                passwordError ? "mt-5" : ""
+              }`}
+            >
               <button
                 className="bg-red-600 w-full py-2 mt-5 text-white rounded-xl hover:bg-red-700"
-                onClick={(e) => {
-                  handleSubmit();
-                }}
+                onClick={handleSubmit}
               >
                 Masuk
               </button>
@@ -130,8 +154,8 @@ function Login() {
         </div>
       </div>
       {/* Sisi Kanan  */}
-      <div className="flex justify-start max-lg:hidden ">
-        <img src="\img\bg_red.jpg" className="h-screen" />
+      <div className="flex justify-start max-lg:hidden">
+        <img src="/img/bg_red.jpg" className="h-full" />
       </div>
     </div>
   );

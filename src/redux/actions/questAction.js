@@ -9,7 +9,6 @@ import { toast } from "react-toastify";
 
 export const getPesertaQuestion = (navigate) => async (dispatch, getState) => {
   const token = getState().auth.token;
-  console.log("token", token);
   try {
     const response = await axios.get(
       `https://backend-production-8357.up.railway.app/api/peserta/getPesertaQuestions`,
@@ -22,8 +21,6 @@ export const getPesertaQuestion = (navigate) => async (dispatch, getState) => {
     );
     const question = response.data.data.shuffledData;
     const timer = response.data.data;
-    console.log("Question Berhasil", response.data.data.shuffledData);
-    console.log("Timer Berhasil", response.data.data.remainingTime);
     dispatch(setQuestions(question));
     dispatch(setTimer(timer));
     navigate("/quest");
@@ -46,7 +43,6 @@ export const getPesertaQuestion = (navigate) => async (dispatch, getState) => {
 };
 
 export const answerQuestion = (data, token) => async (dispatch, getState) => {
-  console.log("data", data);
   try {
     const response = await axios.post(
       `https://backend-production-8357.up.railway.app/api/peserta/answerQuestion`,
@@ -58,7 +54,6 @@ export const answerQuestion = (data, token) => async (dispatch, getState) => {
         },
       }
     );
-    console.log("respon answer question", response);
     const submittedAnswer = response.data.data;
     dispatch(setsubmittedAnswer(submittedAnswer));
   } catch (error) {
@@ -70,13 +65,7 @@ export const answerQuestion = (data, token) => async (dispatch, getState) => {
 };
 
 export const submitTest = (navigate) => async (dispatch, getState) => {
-  // Mengambil seluruh state dari store Redux
-  const state = getState();
-
-  console.log("state", state);
-
   const token = state.auth.token;
-
   try {
     const response = await axios.get(
       `https://backend-production-8357.up.railway.app/api/peserta/submit`,
@@ -87,7 +76,6 @@ export const submitTest = (navigate) => async (dispatch, getState) => {
         },
       }
     );
-    console.log("response submitTest", response.data.data);
     dispatch(setPoint(response.data.data));
     navigate("/result");
   } catch (error) {

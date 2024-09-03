@@ -2,15 +2,23 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getPesertaQuestion } from "../../redux/actions/questAction";
+import { checkIsDone, getUserProfile } from "../../redux/actions/authActions";
 
 function Dashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const token = useSelector((state) => state.auth.token);
+  const token = useSelector((state) => state?.auth?.token);
+  const isDone = useSelector((state) => state?.auth?.profil?.isDone);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+
+  useEffect(() => {
+    if (token) {
+      dispatch(getUserProfile());
+    }
+  }, [dispatch, navigate]);
 
   // Fungsi untuk mendapatkan nama hari dalam bahasa Indonesia
   const getDayName = (dayIndex) => {
@@ -56,36 +64,11 @@ function Dashboard() {
     return `${dayName}, ${day} ${monthName} ${year}`;
   };
 
-  // Fungsi untuk menambahkan angka nol di depan jika angka kurang dari 10
-  const padZero = (number) => {
-    return number < 10 ? `0${number}` : number;
-  };
-
-  // Fungsi untuk mendapatkan format waktu
-  const formatTime = () => {
-    const today = new Date();
-    const hours = padZero(today.getHours());
-    const minutes = padZero(today.getMinutes());
-    const seconds = padZero(today.getSeconds());
-
-    return `${hours} : ${minutes} : ${seconds}`;
-  };
-
-  const [time, setTime] = useState(formatTime());
-
-  useEffect(() => {
-    // Update waktu setiap detik
-    const interval = setInterval(() => {
-      setTime(formatTime());
-    }, 1000);
-
-    // Cleanup interval saat komponen di-unmount
-    return () => clearInterval(interval);
-  }, []);
-
   const handleClick = async (e) => {
     if (token === null) {
       navigate("/login");
+    } else if (isDone === true) {
+      navigate("/result");
     } else {
       openModal();
     }
@@ -123,10 +106,6 @@ function Dashboard() {
               <strong>1 jam 30 Menit</strong>
             </p>
           </div>
-          {/* <div className="mt-5">
-            <p>Total Waktu Pengerjaan</p>
-            <p></p>
-          </div> */}
           <button
             className="bg-red-600 rounded-xl text-white p-2 px-12 hover:bg-red-700 mt-5"
             onClick={(e) => {

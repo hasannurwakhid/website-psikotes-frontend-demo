@@ -1,13 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { getUserProfile, logout } from "../../redux/actions/authActions";
 
 function Dashboard() {
   const navigate = useNavigate();
-  const point = useSelector((state) => state.question.point.pointTotal);
+  const dispatch = useDispatch();
+  const point = useSelector((state) => state?.auth?.profil?.pointTotal);
+  const isDone = useSelector((state) => state?.auth?.profil?.isDone);
+  const token = useSelector((state) => state?.auth?.token);
+
   useEffect(() => {
-    console.log("point", point);
-  }, []);
+    dispatch(getUserProfile());
+    if (isDone === false) {
+      navigate("/");
+    }
+    if (!token) {
+      navigate("/");
+    }
+  }, [dispatch, navigate]);
+
   // Fungsi untuk mendapatkan nama hari dalam bahasa Indonesia
   const getDayName = (dayIndex) => {
     const days = [
@@ -52,41 +65,21 @@ function Dashboard() {
     return `${dayName}, ${day} ${monthName} ${year}`;
   };
 
-  // Fungsi untuk menambahkan angka nol di depan jika angka kurang dari 10
-  const padZero = (number) => {
-    return number < 10 ? `0${number}` : number;
+  // Fungsi untuk menghapus semua data di localStorage
+  const handleLogOut = () => {
+    localStorage.clear();
+    dispatch(logout(navigate));
+    navigate("/"); // Mengarahkan ke halaman lain setelah penghapusan data
   };
-
-  // Fungsi untuk mendapatkan format waktu
-  const formatTime = () => {
-    const today = new Date();
-    const hours = padZero(today.getHours());
-    const minutes = padZero(today.getMinutes());
-    const seconds = padZero(today.getSeconds());
-
-    return `${hours} : ${minutes} : ${seconds}`;
-  };
-
-  const [time, setTime] = useState(formatTime());
-
-  useEffect(() => {
-    // Update waktu setiap detik
-    const interval = setInterval(() => {
-      setTime(formatTime());
-    }, 1000);
-
-    // Cleanup interval saat komponen di-unmount
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <div className="">
       {/* Content  */}
       <div className="container mx-auto flex flex-col items-center justify-center p-3 h-screen gap-4">
         <img
-          src=".\src\assets\logo-center.svg"
+          src="\img\logo-center.svg"
           alt=""
-          className="w-[25%] max-lg:w-[50%]"
+          className="w-[25%] max-lg:w-[65%]"
         />
         <div className="flex flex-col bg-white   items-center rounded-xl w-[50%] max-lg:w-[80%] text-center max-lg:text-sm py-12 max-lg:py-6 px-16 max-lg:px-2 shadow-xl">
           <p className="text-4xl max-lg:text-2xl">
@@ -99,8 +92,6 @@ function Dashboard() {
           <p className="pb-6">Tetap semangat</p>
           <div className="flex bg-red-200 py-3 px-4 rounded-xl gap-4">
             <p>{formatDate()}</p>
-            <p>|</p>
-            <p>{time}</p>
           </div>
           <div className="p-8 text-center  border border-black  rounded m-4">
             <p>Nilai Anda</p>
@@ -108,6 +99,14 @@ function Dashboard() {
               <strong>{point}</strong>
             </p>
           </div>
+          <button
+            className="bg-red-600 text-white rounded-md px-8 py-2"
+            onClick={() => {
+              handleLogOut();
+            }}
+          >
+            Selesai
+          </button>
         </div>
       </div>
     </div>
