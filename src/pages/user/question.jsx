@@ -57,11 +57,8 @@ function Question() {
         window.location.reload();
       }, 1000);
       toast.error("Anda belum memiliki akses, silakan login.");
-    } else if (user.isDone === true) {
-      navigate("/");
-      window.location.reload();
-      return;
-    } else {
+    }
+    if (user.isDone === true) {
       navigate("/");
       window.location.reload();
       return;
