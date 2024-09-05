@@ -125,7 +125,7 @@ export const checkIsDone =
       if (data === "true" || data === true) {
         navigate("/result");
         console.log("data true");
-      } else if (data === false || data === "true") {
+      } else if (data === false || data === "false") {
         dispatch(getPesertaQuestion(navigate));
         console.log("data false");
       } else {
@@ -137,6 +137,11 @@ export const checkIsDone =
         if (error.response && error.response.status === 401) {
           toast.error("Sesi telah berakhir. check is done");
           navigate("/result");
+        }
+        if (error.response && error.response.status === 403) {
+          toast.error("Anda tidak memiliki akses");
+          dispatch(logout(navigate, toast));
+          navigate("/login");
         } else {
           toast.error(error);
         }

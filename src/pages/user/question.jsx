@@ -249,15 +249,13 @@ function Question() {
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
-              <p>
-                <strong>{user.name}</strong>
-              </p>
+              <p className="">{user.name}</p>
               <img
                 src="\img\icon_profil.svg"
                 className="lg:w-[32px] max-lg:w-[24px] md:w-[28px]"
               />
               {dropdownOpen && (
-                <div className="absolute right-0 lg:mt-[200px] max-lg:mt-[150px] bg-white shadow-lg border rounded-md w-48 z-40">
+                <div className="absolute right-0 lg:mt-[200px] max-lg:mt-[150px] bg-white shadow-lg border rounded-md w-56 z-40">
                   <div className="p-4">
                     <p className="font-semibold">{user.name}</p>
                     <p className="text-gray-600">{user.email}</p>

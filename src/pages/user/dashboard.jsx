@@ -67,7 +67,7 @@ function Dashboard() {
   const handleClick = async (e) => {
     if (token === null) {
       navigate("/login");
-    } else if (isDone === true || user.isDone === true) {
+    } else if (isDone === true) {
       navigate("/result");
     } else {
       openModal();

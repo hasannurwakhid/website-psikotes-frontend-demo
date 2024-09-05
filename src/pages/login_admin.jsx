@@ -15,12 +15,6 @@ function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
-  useEffect(() => {
-    if (token) {
-      toast.error("Kamu sudah login.");
-      navigate("/");
-    }
-  }, []);
 
   const toggleShowPassword = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);

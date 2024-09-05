@@ -265,7 +265,7 @@ function Register() {
                 className="absolute inset-y-0 right-0 bottom-0 flex items-center px-3"
                 onClick={toggleShowConfirmPassword}
               >
-                {showPassword ? (
+                {showConfirmPassword ? (
                   <svg
                     fill="black"
                     className="w-4 hover:fill-black"
