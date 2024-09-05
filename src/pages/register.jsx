@@ -14,6 +14,7 @@ function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -111,6 +112,7 @@ function Register() {
     e.preventDefault();
 
     if (validate()) {
+      setLoading(true);
       let data = {
         nik,
         name,
@@ -119,6 +121,7 @@ function Register() {
         password,
       };
       dispatch(register(data, navigate, toast));
+      setLoading(true);
     } else {
       toast.error("Perhatikan data Anda");
     }
@@ -293,8 +296,23 @@ function Register() {
               type="submit"
               className={`bg-red-600 w-full py-2 mt-4 text-white rounded-xl
               hover:bg-red-700 ${errors.password ? "mt-8" : ""}`}
+              disabled={loading}
             >
-              Daftar
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <svg
+                    className="animate-spin h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <path d="M12 4V1M12 1v3m0 16v3M12 22v-3M6.293 6.293L4.879 4.879M4.879 4.879l1.414 1.414M18.364 18.364l1.414 1.414M19.778 19.778l-1.414-1.414M20 12a8 8 0 11-16 0 8 8 0 0116 0z" />
+                  </svg>
+                </div>
+              ) : (
+                "Daftar"
+              )}
             </button>
           </form>
 

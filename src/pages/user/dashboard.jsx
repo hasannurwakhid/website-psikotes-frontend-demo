@@ -2,23 +2,23 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getPesertaQuestion } from "../../redux/actions/questAction";
-import { checkIsDone, getUserProfile } from "../../redux/actions/authActions";
+import { checkIsDone } from "../../redux/actions/authActions";
+import { toast } from "react-toastify";
 
 function Dashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const token = useSelector((state) => state?.auth?.token);
+  const user = useSelector((state) => state?.auth?.user);
   const isDone = useSelector((state) => state?.auth?.profil?.isDone);
-
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
   useEffect(() => {
-    if (token) {
-      dispatch(getUserProfile());
-    }
-  }, [dispatch, navigate]);
+    console.log("user", user);
+  }, []);
 
   // Fungsi untuk mendapatkan nama hari dalam bahasa Indonesia
   const getDayName = (dayIndex) => {
@@ -67,7 +67,7 @@ function Dashboard() {
   const handleClick = async (e) => {
     if (token === null) {
       navigate("/login");
-    } else if (isDone === true) {
+    } else if (isDone === true || user.isDone === true) {
       navigate("/result");
     } else {
       openModal();
@@ -131,7 +131,9 @@ function Dashboard() {
                 <button
                   className="bg-red-600 text-white rounded-md px-4 py-2"
                   onClick={() => {
-                    dispatch(getPesertaQuestion(navigate));
+                    setLoading(true);
+                    dispatch(checkIsDone(token, toast, navigate));
+                    setLoading(false);
                     closeModal();
                   }}
                 >

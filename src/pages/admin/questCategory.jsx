@@ -1,33 +1,15 @@
 import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
   category,
   addCategory,
   deleteCategory,
+  questions,
 } from "../../redux/actions/allCategoryAction";
 import Header from "../../components/header";
 import Sidebar from "../../components/sidebar";
-
-function Modal({ isOpen, onClose, children }) {
-  if (!isOpen) return null;
-
-  return ReactDOM.createPortal(
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96 relative">
-        <button
-          className="absolute top-1 right-3 text-gray-500 text-2xl hover:text-red-700 z-50"
-          onClick={onClose}
-        >
-          &times;
-        </button>
-        {children}
-      </div>
-    </div>,
-    document.body // Memastikan modal dirender di luar hierarki DOM komponen
-  );
-}
+import Modal from "../../components/modal";
 
 function QuestCategory() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -72,7 +54,8 @@ function QuestCategory() {
 
   const handleEditClick = (category) => {
     console.log("Navigating to edit page for category:", category); // Log for debugging
-    navigate(`/editQuestions/${category.id}`, { state: { category }});
+    navigate(`/editQuestions/${category.id}`, { state: { category } });
+    dispatch(questions(category.id));
   };
 
   const handleDeleteClick = () => {
@@ -133,8 +116,12 @@ function QuestCategory() {
             <table className="min-w-full text-left">
               <thead>
                 <tr>
-                  <th className="py-3 px-6 font-medium text-gray-600">Kategori Soal</th>
-                  <th className="py-3 px-6 font-medium text-gray-600">Jumlah soal</th>
+                  <th className="py-3 px-6 font-medium text-gray-600">
+                    Kategori Soal
+                  </th>
+                  <th className="py-3 px-6 font-medium text-gray-600">
+                    Jumlah soal
+                  </th>
                   <th className="py-3 px-6 font-medium text-gray-600">
                     Detail
                   </th>
@@ -238,7 +225,9 @@ function QuestCategory() {
 
           {/* Confirm Delete Modal */}
           <Modal isOpen={isConfirmOpen} onClose={toggleConfirm}>
-            <p>Apakah Anda yakin ingin menghapus seluruh soal dalam kategori ini?</p>
+            <p>
+              Apakah Anda yakin ingin menghapus seluruh soal dalam kategori ini?
+            </p>
             <div className="flex justify-end mt-4">
               <button
                 className="mr-2 bg-gray-200 text-gray-700 px-4 py-2 rounded-lg"

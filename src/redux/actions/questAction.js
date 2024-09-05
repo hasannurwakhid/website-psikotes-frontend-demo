@@ -27,11 +27,6 @@ export const getPesertaQuestion = (navigate) => async (dispatch, getState) => {
   } catch (error) {
     if (axios.isAxiosError(error)) {
       if (error.response && error.response.status === 401) {
-        // Hapus token dari local storage
-        localStorage.removeItem("token");
-
-        // Beri tahu pengguna dan arahkan ke halaman login
-        toast.error("Sesi telah berakhir. Silakan login kembali.");
         navigate("/login");
       } else {
         toast.error(error.message);
@@ -43,19 +38,24 @@ export const getPesertaQuestion = (navigate) => async (dispatch, getState) => {
 };
 
 export const answerQuestion = (data, token) => async (dispatch, getState) => {
+  console.log("data answerQuestion", data);
+  const multipleChoiceId = String(data.multipleChoiceId).trim();
+  console.log("multipleChoiceId", multipleChoiceId);
+  const requestData = { multipleChoiceId };
   try {
     const response = await axios.post(
       `https://backend-production-8357.up.railway.app/api/peserta/answerQuestion`,
-      data,
+      requestData,
       {
         headers: {
-          accept: "application/json",
           Authorization: `Bearer ${token}`,
         },
       }
     );
     const submittedAnswer = response.data.data;
+    console.log("submittedAnswer", submittedAnswer);
     dispatch(setsubmittedAnswer(submittedAnswer));
+    console.log("data answerQuestion", data);
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log(error.response);
@@ -64,8 +64,8 @@ export const answerQuestion = (data, token) => async (dispatch, getState) => {
   }
 };
 
-export const submitTest = (navigate) => async (dispatch, getState) => {
-  const token = state.auth.token;
+export const submitTest = (navigate, toast) => async (dispatch, getState) => {
+  const token = getState().auth.token;
   try {
     const response = await axios.get(
       `https://backend-production-8357.up.railway.app/api/peserta/submit`,
@@ -76,8 +76,9 @@ export const submitTest = (navigate) => async (dispatch, getState) => {
         },
       }
     );
+    console.log("response submitTest", response.data.data);
     dispatch(setPoint(response.data.data));
-    navigate("/result");
+    dispatch(checkIsDone(token, toast, navigate));
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log(error.response);

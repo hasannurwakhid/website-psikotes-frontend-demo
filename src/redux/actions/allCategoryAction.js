@@ -114,15 +114,15 @@ export const deleteCategory = (id) => async (dispatch, getState) => {
 
 export const questions = (categoryId) => async (dispatch, getState) => {
   const token = getState().auth.token || localStorage.getItem("token");
-  console.log("Token yang digunakan: ", token);
+
   try {
     const response = await axios.post(
-      `https://backend-production-8357.up.railway.app/api/admin/categories/questions`,
-      { categoryId },
+      "https://backend-production-8357.up.railway.app/api/admin/categories/questions",
+      { categoryId: String(categoryId) },
       {
         headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`, // Header Authorization
+          "Content-Type": "application/json", // Content-Type untuk JSON
         },
       }
     );
@@ -130,19 +130,41 @@ export const questions = (categoryId) => async (dispatch, getState) => {
     console.log("Respons lengkap dari server:", response);
     console.log("Response Data:", response.data);
     const questions = response.data.data;
-    console.log("Data Soal", questions);
+    console.log("Data Soal:", questions);
+    // Dispatch data yang diterima dari API ke Redux store
     dispatch(setQuestions(questions));
-    return questions;
+
+    return questions; // Mengembalikan data untuk keperluan lain jika diperlukan
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
-      console.error(error.response.data);
+      console.error("Error Response Data:", error.response.data);
     } else {
-      console.error(error.message);
+      console.error("Error Message:", error.message);
     }
   }
 };
 
 export const addQuestions = (data) => async (dispatch, getState) => {
+  const token = getState().auth.token || localStorage.getItem("token");
+  try {
+    const response = await axios.post(``, data, {
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log("Tambah Soal Berhasil", response);
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      console.error("Error during add question:", error.response.data);
+    } else {
+      console.error("Error during add question:", error.message);
+    }
+  }
+};
+
+export const deleteQuestion = (data) => async (dispatch, getState) => {
   const token = getState().auth.token || localStorage.getItem("token");
   try {
     const response = await axios.post(``, data, {
