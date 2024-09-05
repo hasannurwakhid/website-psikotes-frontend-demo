@@ -249,7 +249,7 @@ function Question() {
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
-              <p className="">{user.name}</p>
+              <p>{user.name.split(" ")[0]}</p>
               <img
                 src="\img\icon_profil.svg"
                 className="lg:w-[32px] max-lg:w-[24px] md:w-[28px]"

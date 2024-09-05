@@ -130,7 +130,7 @@ function Register() {
   return (
     <div className="flex bg-white h-screen">
       {/* Sisi Kiri  */}
-      <div className="w-[720px]  lg:px-16 max-sm:px-5 md:px-40 md:pt-7 flex flex-col justify-center">
+      <div className="w-[720px] lg:px-16 max-sm:px-5 md:px-40 md:pt-7 flex flex-col justify-center">
         <div className="m-4">
           <img src="/img/logo.svg" className="w-[70%]" />
           <div className="mt-3 mb-3 flex flex-col gap-2">
@@ -244,13 +244,13 @@ function Register() {
                   </svg>
                 )}
               </button>
-              <div className="absolute -bottom-6 text-red-500 text-sm">
+              <div className="absolute -bottom-6 max-lg:-bottom-10 text-red-500 text-sm">
                 {" "}
                 {errors.password && <span>{errors.password}</span>}
               </div>
             </div>
 
-            <div className={`relative ${errors.password ? "mt-5" : ""}`}>
+            <div className={`relative ${errors.password ? "mt-5 max-lg:mt-10" : ""}`}>
               <input
                 type={showConfirmPassword ? "text" : "password"}
                 className={`w-full p-2 rounded-xl border ${

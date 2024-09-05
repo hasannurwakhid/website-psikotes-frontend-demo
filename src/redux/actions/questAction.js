@@ -77,8 +77,9 @@ export const submitTest = (navigate, toast) => async (dispatch, getState) => {
       }
     );
     console.log("response submitTest", response.data.data);
-    dispatch(setPoint(response.data.data));
-    dispatch(checkIsDone(token, toast, navigate));
+    await dispatch(setPoint(response.data.data));
+    await dispatch(checkIsDone(token, toast, navigate));
+    navigate("/result");
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log(error.response);

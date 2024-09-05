@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getPesertaQuestion } from "../../redux/actions/questAction";
-import { checkIsDone } from "../../redux/actions/authActions";
+import { checkIsDone, getUserProfile } from "../../redux/actions/authActions";
 import { toast } from "react-toastify";
 
 function Dashboard() {
@@ -17,6 +17,7 @@ function Dashboard() {
   const closeModal = () => setIsModalOpen(false);
 
   useEffect(() => {
+    dispatch(getUserProfile());
     console.log("user", user);
   }, []);
 

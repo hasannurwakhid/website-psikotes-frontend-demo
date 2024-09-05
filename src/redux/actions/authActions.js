@@ -118,12 +118,13 @@ export const checkIsDone =
       const data = response.data.data;
       console.log("dataisdone", data);
       // Pastikan tipe data yang diperoleh adalah boolean
-
+      dispatch(setIsDone(data));
       // Cek tipe dan nilai data
       console.log("Data type:", typeof data, "Data value:", data);
 
       if (data === "true" || data === true) {
         navigate("/result");
+        window.location.reload();
         console.log("data true");
       } else if (data === false || data === "false") {
         dispatch(getPesertaQuestion(navigate));
@@ -135,8 +136,8 @@ export const checkIsDone =
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.response && error.response.status === 401) {
-          toast.error("Sesi telah berakhir. check is done");
-          navigate("/result");
+          toast.error("Sesi telah berakhir");
+          dispatch(logout(navigate, toast));
         }
         if (error.response && error.response.status === 403) {
           toast.error("Anda tidak memiliki akses");
@@ -166,12 +167,7 @@ export const logout = (navigate, toast) => (dispatch) => {
     dispatch(setToken(null));
     dispatch(setUser(null));
     localStorage.removeItem("question");
-
-    if (navigate) {
-      setTimeout(() => {
-        navigate("/login");
-      }, 1500);
-    }
+    navigate("/login");
     toast.success("Berhasil log out.");
   } catch (error) {
     toast.error(error?.message);
