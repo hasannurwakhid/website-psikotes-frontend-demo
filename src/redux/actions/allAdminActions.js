@@ -32,17 +32,28 @@ export const admin = () => async (dispatch, getState) => {
   }
 };
 
-export const addAdmin = (data) => async (dispatch, getState) => {
+export const addAdmin = (data, toast) => async (dispatch, getState) => {
   const token = getState().auth.token || localStorage.getItem("token");
-  try {
-    const response = await axios.post(
-      `https://backend-production-8357.up.railway.app/api/superadmin/auth/admin`,
-      data,
-      {
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+    try {
+      const response = await axios.post(
+        `https://backend-production-8357.up.railway.app/api/superadmin/auth/admin`,
+        data,
+        {
+          headers: {
+            accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      console.log("Tambah Akun Berhasil", response);
+      toast.success("Berhasil menambah akun admin");
+  
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.error("Error during add account:", error.response.data);
+      } else {
+        console.error("Error during add account:", error.message);
       }
     );
 
@@ -56,7 +67,7 @@ export const addAdmin = (data) => async (dispatch, getState) => {
   }
 };
 
-export const updateAdmin = (id, data) => {
+export const updateAdmin = (id, data, toast) => {
   return async (dispatch, getState) => {
     const token = getState().auth.token || localStorage.getItem("token");
     console.log(data);
@@ -74,6 +85,7 @@ export const updateAdmin = (id, data) => {
 
       console.log("Edit Akun Berhasil", response.data);
       dispatch(setUpdateAdmin(response.data.data));
+      toast.success("Berhasil update data admin");
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         console.error("Error during update account:", error.response.data);
@@ -86,14 +98,25 @@ export const updateAdmin = (id, data) => {
 
 export const deleteAdmin = (id) => async (dispatch, getState) => {
   const token = getState().auth.token || localStorage.getItem("token");
-  try {
-    await axios.delete(
-      `https://backend-production-8357.up.railway.app/api/superadmin/auth/admin/${id}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Pastikan token disertakan di sini
-        },
+    try {
+      await axios.delete(
+        `https://backend-production-8357.up.railway.app/api/superadmin/auth/admin/${id}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Pastikan token disertakan di sini
+          },
+        }
+      );
+  
+      console.log("Hapus Akun Berhasil");
+      dispatch(setDeleteAdmin(id));
+      toast.success("Berhasil hapus akun admin");
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.error("Error during delete account:", error.response.data);
+      } else {
+        console.error("Error during delete account:", error.message);
       }
     );
 

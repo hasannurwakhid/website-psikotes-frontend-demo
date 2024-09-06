@@ -63,8 +63,7 @@ export const answerQuestion = (data, token) => async (dispatch, getState) => {
     }
   }
 };
-
-export const submitTest = (navigate, toast) => async (dispatch, getState) => {
+export const submitTest = (navigate) => async (dispatch, getState) => {
   const token = getState().auth.token;
   try {
     const response = await axios.get(

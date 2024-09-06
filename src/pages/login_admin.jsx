@@ -95,7 +95,6 @@ function Login() {
                   value={password}
                   onChange={handlePasswordChange}
                 />
-
                 <button
                   type="button"
                   className="absolute inset-y-0 right-0 bottom-0 flex items-center px-3"

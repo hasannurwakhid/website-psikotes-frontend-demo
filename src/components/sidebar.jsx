@@ -5,6 +5,8 @@ import { useSelector } from "react-redux";
 function Sidebar({ sidebarOpen, toggleSidebar }) {
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user);
+  const userRole = useSelector((state) => state.auth.user.role);
+
   return (
     <aside
       className={`fixed lg:fixed transform top-0 left-0 h-full w-64 bg-red-700 text-white lg:translate-x-0 p-8 transition-transform ${
@@ -38,10 +40,7 @@ function Sidebar({ sidebarOpen, toggleSidebar }) {
         <ul>
           <li className="lg:hidden mb-4 bg-red-700 rounded-lg p-2 hover:bg-red-800">
             <div className="flex items-center ml-4">
-              <img
-                src="\src\assets\icon_profil_white.svg"
-                className="mr-5 w-7 h-7"
-              />
+              <img src="img\icon_profil_white.svg" className="mr-5 w-7 h-7" />
               <p>
                 <strong>{user.name}</strong>
               </p>
@@ -53,7 +52,7 @@ function Sidebar({ sidebarOpen, toggleSidebar }) {
           >
             <a href="#beranda" className="flex items-center ml-4">
               <img
-                src="\src\assets\beranda.svg"
+                src="img\beranda.svg"
                 alt="Beranda"
                 className="mr-5 w-6 h-6"
               />
@@ -66,26 +65,28 @@ function Sidebar({ sidebarOpen, toggleSidebar }) {
           >
             <a href="#kumpulan_soal" className="flex items-center ml-4">
               <img
-                src="\src\assets\kumpulan_soal.svg"
+                src="img\kumpulan_soal.svg"
                 alt="Kumpulan Soal"
                 className="mr-5 w-6 h-6"
               />
               <span>Kumpulan Soal</span>
             </a>
           </li>
-          <li
-            className="mb-4 bg-red-700 rounded-lg p-2  hover:bg-red-800"
-            onClick={() => navigate("/AddAcc")}
-          >
-            <a href="#akun" className="flex items-center ml-4">
-              <img
-                src="\src\assets\tambah_akun.svg"
-                alt="Tambah Akun"
-                className="mr-5 w-6 h-6"
-              />
-              <span>Tambah Akun</span>
-            </a>
-          </li>
+          {userRole === "superadmin" && (
+            <li
+              className="mb-4 bg-red-700 rounded-lg p-2  hover:bg-red-800"
+              onClick={() => navigate("/AddAcc")}
+            >
+              <a href="#akun" className="flex items-center ml-4">
+                <img
+                  src="img\tambah_akun.svg"
+                  alt="Tambah Akun"
+                  className="mr-5 w-6 h-6"
+                />
+                <span>Tambah Akun</span>
+              </a>
+            </li>
+          )}
         </ul>
       </nav>
     </aside>
