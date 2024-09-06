@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import Header from "../../components/header";
 import Sidebar from "../../components/sidebar";
 import {
+  addQuestions,
   deleteQuestion,
   questions,
-} from "../../redux/actions/allCategoryAction"; // Pastikan Anda membuat action `setAnswerKey`
+  updateMultipleChoices,
+  updateQuestion,
+} from "../../redux/actions/allCategoryAction";
 import { setAnswerKey } from "../../redux/reducers/allCategoryReducers";
 import Modal from "../../components/modal";
 
@@ -15,10 +18,13 @@ function EditQuestions() {
   const location = useLocation();
   const dispatch = useDispatch();
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [isConfirmEditOpen, setIsConfirmEditOpen] = useState(false);
+  const [isAddQuestionOpen, setIsAddQuestionOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null); // State untuk menyimpan gambar
   const [id, setId] = useState(null);
   const questionList = useSelector((auth) => auth?.allCategory?.questions);
-  const answerKeys = useSelector((auth) => auth?.allCategory?.answerKey); // Redux state for answer keys
+  const answerKeys = useSelector((auth) => auth?.allCategory?.answerKey);
   const [selectedValue, setSelectedValue] = useState({
     categoryName: "",
   });
@@ -26,7 +32,25 @@ function EditQuestions() {
   const [editedChoices, setEditedChoices] = useState(
     questionList[id]?.MultipleChoices || ""
   );
-  const [editedPoint, setEditedPoint] = useState(""); // For point dropdown
+  const [editedPoint, setEditedPoint] = useState("");
+  const [editedImage, setEditedImage] = useState("");
+  const [newQuestion, setNewQuestion] = useState({
+    question: "",
+    imageQuestion: null,
+    point: null,
+    categoryId: "",
+    correctAnswer: null,
+    multipleChoice1: "",
+    multipleChoice2: "",
+    multipleChoice3: "",
+    multipleChoice4: "",
+    multipleChoice5: "",
+    multipleChoiceImg1: null,
+    multipleChoiceImg2: null,
+    multipleChoiceImg3: null,
+    multipleChoiceImg4: null,
+    multipleChoiceImg5: null,
+  });
 
   useEffect(() => {
     if (selectedValue.categoryName && selectedValue.categoryName.id) {
@@ -54,9 +78,14 @@ function EditQuestions() {
     setIsConfirmEditOpen(!isConfirmEditOpen);
   };
 
-  const handleDeletedQuestion = async () => {
+  const toggleAddQuestion = () => {
+    setIsAddQuestionOpen(!isAddQuestionOpen);
+  };
+
+  const handleDeletedQuestion = async (e) => {
     await dispatch(deleteQuestion(id));
-    dispatch(questions(categoryId));
+    toggleConfirm();
+    window.location.reload();
   };
 
   useEffect(() => {
@@ -85,30 +114,60 @@ function EditQuestions() {
     }
   }, [questionList, dispatch]);
 
-  const handleDeleteClick = () => {
+  const handleDeleteClick = (id) => {
+    setId(id);
     toggleConfirm();
   };
 
-  const handleEditClick = (id) => {
+  const handleEditClick = (index, id) => {
     setId(id);
-    setEditedQuestion(questionList[id].question); // Set question value to state
-    setEditedChoices(questionList[id].MultipleChoices); // Set choices to state
-    setEditedPoint(questionList[id].point); // Set point to state
+    setEditedQuestion(questionList[index].question); // Set question value to state
+    setEditedChoices(questionList[index].MultipleChoices); // Set choices to state
+    setEditedPoint(questionList[index].point); // Set point to state
     toggleEditConfirm();
   };
 
-  const handleSaveChanges = () => {
+  const handleSaveChanges = async (e) => {
+    setLoading(true);
     const updatedQuestion = {
-      ...questionList[id],
-      question: editedQuestion,
-      MultipleChoices: editedChoices,
-      point: editedPoint,
+      question: editedQuestion.question,
+      point: editedQuestion.point,
+      correctAnswer: editedQuestion.correctAnswer, // Tambahkan correctAnswer
+      categoryId: selectedValue.categoryName.id,
+      image: editedImage,
     };
+    console.log("updatedQuestion", updatedQuestion);
 
     // Dispatch action to save the updated question
-    dispatch(updateQuestion(updatedQuestion));
+    await dispatch(updateQuestion(updatedQuestion, id));
 
+    // Lakukan iterasi pada setiap pilihan (MultipleChoices)
+    editedChoices.forEach(async (choice) => {
+      const updatedChoice = {
+        description: choice.description, // Deskripsi pilihan yang sudah diubah
+        image: choice.image, // Gambar pilihan jika ada
+      };
+      console.log("updatedChoice", updatedChoice);
+
+      // Kirim permintaan update untuk setiap pilihan
+      await dispatch(updateMultipleChoices(updatedChoice, choice.id));
+    });
+    setLoading(true);
     toggleEditConfirm();
+    window.location.reload();
+  };
+
+  const handleSaveNewQuestion = async () => {
+    const updatedQuestion = {
+      ...newQuestion,
+      categoryId: selectedValue.categoryName.id,
+    };
+    console.log("New Question", updatedQuestion);
+
+    // // Dispatch action to add the new question
+    await dispatch(addQuestions(updatedQuestion));
+    toggleAddQuestion();
+    window.location.reload();
   };
 
   const handleDescriptionChange = (index, newDescription) => {
@@ -117,6 +176,44 @@ function EditQuestions() {
         i === index ? { ...choice, description: newDescription } : choice
       )
     );
+  };
+
+  const fileInputRefs = useRef([null, null, null, null, null]); // Ref array untuk 5 input file
+
+  const handleSvgClick = (index) => {
+    if (fileInputRefs.current[index]) {
+      fileInputRefs.current[index].click();
+    }
+  };
+
+  const handleFileChange = (file, index) => {
+    if (file) {
+      setNewQuestion((prev) => ({
+        ...prev,
+        [`multipleChoiceImg${index + 1}`]: file, // Simpan file asli
+      }));
+    }
+  };
+
+  const fileInputRefForQuestion = useRef(null);
+
+  const handleSvgClickForQuestion = () => {
+    if (fileInputRefForQuestion.current) {
+      fileInputRefForQuestion.current.click();
+    }
+  };
+
+  const handleFileChangeForQuestion = (file) => {
+    if (file) {
+      if (file instanceof File) {
+        setNewQuestion((prev) => ({
+          ...prev,
+          imageQuestion: file, // Simpan file asli
+        }));
+      } else {
+        console.error("File is not valid");
+      }
+    }
   };
 
   return (
@@ -142,7 +239,10 @@ function EditQuestions() {
               />
             </div>
             <div className="flex justify-between">
-              <button className="flex justify-center items-center w-[120px] h-10 bg-blue-600 text-white hover:bg-blue-700 hover:text-gray-100 rounded-lg shadow font-bold">
+              <button
+                className="flex justify-center items-center w-[120px] h-10 bg-blue-600 text-white hover:bg-blue-700 hover:text-gray-100 rounded-lg shadow font-bold"
+                onClick={toggleAddQuestion}
+              >
                 Tambah Soal
               </button>
             </div>
@@ -250,7 +350,7 @@ function EditQuestions() {
                   <button
                     className="text-gray-400 hover:text-gray-500 mt-[1px]"
                     onClick={() => {
-                      handleEditClick(index);
+                      handleEditClick(index, quest.id);
                     }}
                   >
                     <svg
@@ -271,7 +371,7 @@ function EditQuestions() {
                   <button
                     className="text-gray-400 hover:text-gray-500"
                     onClick={() => {
-                      handleDeleteClick(index);
+                      handleDeleteClick(quest.id);
                     }}
                   >
                     <svg
@@ -304,7 +404,9 @@ function EditQuestions() {
               </button>
               <button
                 className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
-                onClick={handleDeletedQuestion}
+                onClick={() => {
+                  handleDeletedQuestion(id);
+                }}
               >
                 Hapus
               </button>
@@ -427,6 +529,204 @@ function EditQuestions() {
                         Simpan
                       </button>
                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          {/* Modal untuk tambah soal */}
+          {isAddQuestionOpen && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+              <div className="bg-white p-12 rounded-lg shadow-lg w-[60%] mt-20 lg:ml-[250px] max-h-[80vh] overflow-y-auto">
+                <div className="flex gap-4 items-start">
+                  <div className="flex flex-col gap-3 w-full">
+                    <div>
+                      <div className="flex">
+                        <input
+                          type="text"
+                          className="p-2 border-b border-gray-600 w-full"
+                          placeholder="Tulis Pertanyaan"
+                          name="question"
+                          value={newQuestion.question}
+                          onChange={(e) =>
+                            setNewQuestion({
+                              ...newQuestion,
+                              question: e.target.value,
+                            })
+                          }
+                        />
+                        <button
+                          className="hover:bg-gray-200 p-2 rounded-md mt-4"
+                          onClick={() => handleSvgClickForQuestion()} // Fungsi untuk trigger input file question
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth="1.5"
+                            stroke="currentColor"
+                            className="size-6"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+                            />
+                          </svg>
+                        </button>
+
+                        {/* Input file yang tersembunyi untuk question */}
+                        <input
+                          type="file"
+                          className="hidden"
+                          ref={fileInputRefForQuestion} // Ref untuk input file pertanyaan
+                          onChange={(e) =>
+                            handleFileChangeForQuestion(e.target.files[0])
+                          } // Fungsi untuk menangani file question
+                          accept="image/*"
+                        />
+                      </div>
+                      {newQuestion.imageQuestion &&
+                        newQuestion.imageQuestion instanceof File && (
+                          <img
+                            src={URL.createObjectURL(newQuestion.imageQuestion)}
+                            className="w-[40%] h-[40%] max-lg:w-[100%] mt-4"
+                            alt="Question"
+                          />
+                        )}
+                    </div>
+                    <div>
+                      {[1, 2, 3, 4, 5].map((choice) => (
+                        <div className="flex flex-col mb-4" key={choice}>
+                          <div className="flex">
+                            <input
+                              type="text"
+                              className="p-2 border-b border-gray-600 w-full"
+                              placeholder={`Pilihan ${choice}`}
+                              value={newQuestion[`multipleChoice${choice}`]}
+                              onChange={(e) =>
+                                setNewQuestion({
+                                  ...newQuestion,
+                                  [`multipleChoice${choice}`]: e.target.value,
+                                })
+                              }
+                            />
+
+                            <button
+                              className="hover:bg-gray-200 p-2 rounded-md mt-4"
+                              onClick={() => handleSvgClick(choice - 1)} // index untuk array mulai dari 0
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth="1.5"
+                                stroke="currentColor"
+                                className="size-6"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+                                />
+                              </svg>
+                            </button>
+
+                            {/* Input file yang tersembunyi */}
+                            <input
+                              type="file"
+                              className="hidden"
+                              ref={(el) =>
+                                (fileInputRefs.current[choice - 1] = el)
+                              } // Ref ke elemen input file berdasarkan pilihan
+                              onChange={(e) =>
+                                handleFileChange(e.target.files[0], choice - 1)
+                              } // Mengambil file berdasarkan index pilihan
+                              accept="image/*"
+                            />
+                          </div>
+                          {newQuestion[`multipleChoiceImg${choice}`] &&
+                            newQuestion[`multipleChoiceImg${choice}`] instanceof
+                              File && (
+                              <img
+                                src={URL.createObjectURL(
+                                  newQuestion[`multipleChoiceImg${choice}`]
+                                )}
+                                className="w-[40%] h-[40%] max-lg:w-[100%] mt-4"
+                                alt={`Pilihan ${choice}`}
+                              />
+                            )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-12"></div>
+                <div className="flex justify-between mt-6 items-center gap-2">
+                  <div>
+                    {/* Dropdown for Points */}
+                    <select
+                      className="border border-gray-300 rounded-md px-4 py-2 text-gray-700 bg-white"
+                      value={newQuestion.point}
+                      onChange={(e) =>
+                        setNewQuestion({
+                          ...newQuestion,
+                          point: e.target.value,
+                        })
+                      }
+                    >
+                      <option value="">Point</option>
+                      <option value="5">5 Point</option>
+                      <option value="10">10 Point</option>
+                      <option value="15">15 Point</option>
+                      <option value="20">20 Point</option>
+                    </select>
+                  </div>
+                  {/* Dropdown for Correct Answer */}
+                  <select
+                    className="border border-gray-300 rounded-md px-4 py-2 text-gray-700 bg-white"
+                    value={newQuestion.correctAnswer}
+                    onChange={(e) =>
+                      setNewQuestion({
+                        ...newQuestion,
+                        correctAnswer: e.target.value,
+                      })
+                    }
+                  >
+                    <option value="">Kunci Jawaban</option>
+                    <option value="1">Correct Answer 1</option>
+                    <option value="2">Correct Answer 2</option>
+                    <option value="3">Correct Answer 3</option>
+                    <option value="4">Correct Answer 4</option>
+                    <option value="5">Correct Answer 5</option>
+                  </select>
+                  <div>
+                    <button
+                      className="bg-gray-300 text-gray-700 rounded-md px-4 py-2 hover:bg-gray-400 hover:text-gray-200"
+                      onClick={toggleAddQuestion}
+                    >
+                      Batal
+                    </button>
+                    <button
+                      className="bg-blue-600 text-white rounded-md px-4 py-2 hover:bg-red-700"
+                      onClick={handleSaveNewQuestion}
+                    >
+                      {loading ? (
+                        <div className="flex items-center justify-center">
+                          <svg
+                            className="animate-spin h-5 w-5 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                          >
+                            <path d="M12 4V1M12 1v3m0 16v3M12 22v-3M6.293 6.293L4.879 4.879M4.879 4.879l1.414 1.414M18.364 18.364l1.414 1.414M19.778 19.778l-1.414-1.414M20 12a8 8 0 11-16 0 8 8 0 0116 0z" />
+                          </svg>
+                        </div>
+                      ) : (
+                        "Daftar"
+                      )}
+                    </button>
                   </div>
                 </div>
               </div>
