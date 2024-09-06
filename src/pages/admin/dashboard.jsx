@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { allUsers, getTotalPoint } from "../../redux/actions/allUsersActions";
 import Header from "../../components/header";
 import Sidebar from "../../components/sidebar";
+import Modal from "../../components/modal";
 
 function Modal({ isOpen, onClose, children }) {
   if (!isOpen) return null;

@@ -11,15 +11,10 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [nikError, setNikError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
-  useEffect(() => {
-    if (token) {
-      toast.error("Kamu sudah login.");
-      navigate("/");
-    }
-  }, []);
 
   const toggleShowPassword = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -54,7 +49,9 @@ function Login() {
       nik,
       password,
     };
-    dispatch(login(data, navigate, toast));
+    setLoading(true); // Mulai loading
+    await dispatch(login(data, navigate, toast));
+    setLoading(false); // Selesai loading
   };
 
   return (
@@ -136,10 +133,27 @@ function Login() {
               }`}
             >
               <button
-                className="bg-red-600 w-full py-2 mt-5 text-white rounded-xl hover:bg-red-700"
+                className={`bg-red-600 w-full py-2 mt-5 text-white rounded-xl hover:bg-red-700 ${
+                  loading ? "opacity-50 cursor-not-allowed" : ""
+                }`}
                 onClick={handleSubmit}
+                disabled={loading}
               >
-                Masuk
+                {loading ? (
+                  <div className="flex items-center justify-center">
+                    <svg
+                      className="animate-spin h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                    >
+                      <path d="M12 4V1M12 1v3m0 16v3M12 22v-3M6.293 6.293L4.879 4.879M4.879 4.879l1.414 1.414M18.364 18.364l1.414 1.414M19.778 19.778l-1.414-1.414M20 12a8 8 0 11-16 0 8 8 0 0116 0z" />
+                    </svg>
+                  </div>
+                ) : (
+                  "Masuk"
+                )}
               </button>
               <button
                 className="text-blue-600 hover:text-blue-700"

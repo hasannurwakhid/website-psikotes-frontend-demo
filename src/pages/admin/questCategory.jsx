@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
   category,
   addCategory,
   deleteCategory,
+  questions,
 } from "../../redux/actions/allCategoryAction";
 import Header from "../../components/header";
 import Sidebar from "../../components/sidebar";
@@ -28,6 +28,7 @@ function Modal({ isOpen, onClose, children }) {
     document.body // Memastikan modal dirender di luar hierarki DOM komponen
   );
 }
+import Modal from "../../components/modal";
 
 function QuestCategory() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -82,7 +83,9 @@ function QuestCategory() {
   
 
   const handleEditClick = (category) => {
+    console.log("Navigating to edit page for category:", category); // Log for debugging
     navigate(`/editQuestions/${category.id}`, { state: { category } });
+    dispatch(questions(category.id));
   };
 
   const handleDeleteClick = () => {
@@ -298,7 +301,9 @@ function QuestCategory() {
 
           {/* Confirm Delete Modal */}
           <Modal isOpen={isConfirmOpen} onClose={toggleConfirm}>
-            <p>Apakah Anda yakin ingin menghapus seluruh soal dalam kategori ini?</p>
+            <p>
+              Apakah Anda yakin ingin menghapus seluruh soal dalam kategori ini?
+            </p>
             <div className="flex justify-end mt-4">
               <button
                 className="mr-2 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg"

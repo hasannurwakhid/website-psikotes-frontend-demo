@@ -14,6 +14,7 @@ function Register() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -111,6 +112,7 @@ function Register() {
     e.preventDefault();
 
     if (validate()) {
+      setLoading(true);
       let data = {
         nik,
         name,
@@ -119,6 +121,7 @@ function Register() {
         password,
       };
       dispatch(register(data, navigate, toast));
+      setLoading(true);
     } else {
       toast.error("Perhatikan data Anda");
     }
@@ -127,7 +130,7 @@ function Register() {
   return (
     <div className="flex bg-white h-screen">
       {/* Sisi Kiri  */}
-      <div className="w-[720px]  lg:px-16 max-sm:px-5 md:px-40 md:pt-7 flex flex-col justify-center">
+      <div className="w-[720px] lg:px-16 max-sm:px-5 md:px-40 md:pt-7 flex flex-col justify-center">
         <div className="m-4">
           <img src="/img/logo.svg" className="w-[70%]" />
           <div className="mt-3 mb-3 flex flex-col gap-2">
@@ -241,13 +244,13 @@ function Register() {
                   </svg>
                 )}
               </button>
-              <div className="absolute -bottom-6 text-red-500 text-sm">
+              <div className="absolute -bottom-6 max-lg:-bottom-10 text-red-500 text-sm">
                 {" "}
                 {errors.password && <span>{errors.password}</span>}
               </div>
             </div>
 
-            <div className={`relative ${errors.password ? "mt-5" : ""}`}>
+            <div className={`relative ${errors.password ? "mt-5 max-lg:mt-10" : ""}`}>
               <input
                 type={showConfirmPassword ? "text" : "password"}
                 className={`w-full p-2 rounded-xl border ${
@@ -262,7 +265,7 @@ function Register() {
                 className="absolute inset-y-0 right-0 bottom-0 flex items-center px-3"
                 onClick={toggleShowConfirmPassword}
               >
-                {showPassword ? (
+                {showConfirmPassword ? (
                   <svg
                     fill="black"
                     className="w-4 hover:fill-black"
@@ -293,8 +296,23 @@ function Register() {
               type="submit"
               className={`bg-red-600 w-full py-2 mt-4 text-white rounded-xl
               hover:bg-red-700 ${errors.password ? "mt-8" : ""}`}
+              disabled={loading}
             >
-              Daftar
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <svg
+                    className="animate-spin h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <path d="M12 4V1M12 1v3m0 16v3M12 22v-3M6.293 6.293L4.879 4.879M4.879 4.879l1.414 1.414M18.364 18.364l1.414 1.414M19.778 19.778l-1.414-1.414M20 12a8 8 0 11-16 0 8 8 0 0116 0z" />
+                  </svg>
+                </div>
+              ) : (
+                "Daftar"
+              )}
             </button>
           </form>
 

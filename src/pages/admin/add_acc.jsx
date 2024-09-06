@@ -32,6 +32,7 @@ function Modal({ isOpen, onClose, children }) {
     document.body
   );
 }
+import Modal from "../../components/modal";
 
 function AddAcc() {
   const [sidebarOpen, setSidebarOpen] = useState(false);

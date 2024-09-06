@@ -68,8 +68,7 @@ function Dashboard() {
   // Fungsi untuk menghapus semua data di localStorage
   const handleLogOut = () => {
     localStorage.clear();
-    dispatch(logout(navigate));
-    navigate("/"); // Mengarahkan ke halaman lain setelah penghapusan data
+    dispatch(logout(navigate, toast));
   };
 
   return (

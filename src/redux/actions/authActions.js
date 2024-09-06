@@ -5,6 +5,7 @@ import {
   setUser,
   setUserProfil,
 } from "../reducers/authReducers";
+import { getPesertaQuestion } from "./questAction";
 
 export const login = (data, navigate, toast) => async (dispatch, getState) => {
   console.log(data);
@@ -85,12 +86,12 @@ export const noAccessToken = (navigate) => async (dispatch, getState) => {
 
 export const getUserProfile = () => async (dispatch, getState) => {
   const token = getState().auth.token;
+  console.log("token GetUserProfile", token);
   try {
     const response = await axios.get(
       `https://backend-production-8357.up.railway.app/api/peserta/auth/profile`,
       {
         headers: {
-          accept: "application/json",
           Authorization: `Bearer ${token}`,
         },
       }
@@ -102,25 +103,54 @@ export const getUserProfile = () => async (dispatch, getState) => {
   }
 };
 
-export const checkIsDone = () => async (dispatch, getState) => {
-  const token = getState().auth.token;
-  console.log("token", token);
-  try {
-    const response = await axios.get(
-      `https://backend-production-8357.up.railway.app/api/peserta/answerQuestion/isDone`,
-      {
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+export const checkIsDone =
+  (token, toast, navigate) => async (dispatch, getState) => {
+    try {
+      const response = await axios.get(
+        "https://backend-production-8357.up.railway.app/api/peserta/answerQuestion/isDone",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      // Log hasil respons
+      const data = response.data.data;
+      console.log("dataisdone", data);
+      // Pastikan tipe data yang diperoleh adalah boolean
+      dispatch(setIsDone(data));
+      // Cek tipe dan nilai data
+      console.log("Data type:", typeof data, "Data value:", data);
+
+      if (data === "true" || data === true) {
+        navigate("/result");
+        window.location.reload();
+        console.log("data true");
+      } else if (data === false || data === "false") {
+        dispatch(getPesertaQuestion(navigate));
+        console.log("data false");
+      } else {
+        console.error("Unexpected data value:", data);
       }
-    );
-    console.log("response", response.data);
-    // dispatch(setIsDone());
-  } catch (error) {
-    console.log(error.message);
-  }
-};
+      dispatch(getUserProfile());
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response && error.response.status === 401) {
+          toast.error("Sesi telah berakhir");
+          dispatch(logout(navigate, toast));
+        }
+        if (error.response && error.response.status === 403) {
+          toast.error("Anda tidak memiliki akses");
+          dispatch(logout(navigate, toast));
+          navigate("/login");
+        } else {
+          toast.error(error);
+        }
+      } else {
+        toast.error(error);
+      }
+    }
+  };
 
 export const checkToken = (navigate) => (dispatch, getState) => {
   const token = getState().auth.token;
@@ -132,17 +162,12 @@ export const checkToken = (navigate) => (dispatch, getState) => {
   }
 };
 
-export const logout = (navigate) => (dispatch) => {
+export const logout = (navigate, toast) => (dispatch) => {
   try {
     dispatch(setToken(null));
     dispatch(setUser(null));
     localStorage.removeItem("question");
-
-    if (navigate) {
-      setTimeout(() => {
-        navigate("/login");
-      }, 1500);
-    }
+    navigate("/login");
     toast.success("Berhasil log out.");
   } catch (error) {
     toast.error(error?.message);

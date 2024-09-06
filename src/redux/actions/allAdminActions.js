@@ -1,16 +1,21 @@
 import axios from "axios";
-import { setAdmin, setAddAdmin, setUpdateAdmin, setDeleteAdmin } from "../reducers/allAdminReducers";
+import {
+  setAdmin,
+  setAddAdmin,
+  setUpdateAdmin,
+  setDeleteAdmin,
+} from "../reducers/allAdminReducers";
 
 export const admin = () => async (dispatch, getState) => {
   const token = getState().auth.token || localStorage.getItem("token");
   try {
     const response = await axios.get(
-      'https://backend-production-8357.up.railway.app/api/superadmin/auth/admin',
+      "https://backend-production-8357.up.railway.app/api/superadmin/auth/admin",
       {
         headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
 
@@ -25,7 +30,7 @@ export const admin = () => async (dispatch, getState) => {
       console.error(error.message);
     }
   }
-}
+};
 
 export const addAdmin = (data, toast) => async (dispatch, getState) => {
   const token = getState().auth.token || localStorage.getItem("token");
@@ -50,8 +55,17 @@ export const addAdmin = (data, toast) => async (dispatch, getState) => {
       } else {
         console.error("Error during add account:", error.message);
       }
+    );
+
+    console.log("Tambah Akun Berhasil", response);
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      console.error("Error during add account:", error.response.data);
+    } else {
+      console.error("Error during add account:", error.message);
     }
-  };
+  }
+};
 
 export const updateAdmin = (id, data, toast) => {
   return async (dispatch, getState) => {
@@ -68,11 +82,10 @@ export const updateAdmin = (id, data, toast) => {
           },
         }
       );
-  
+
       console.log("Edit Akun Berhasil", response.data);
       dispatch(setUpdateAdmin(response.data.data));
       toast.success("Berhasil update data admin");
-  
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         console.error("Error during update account:", error.response.data);
@@ -80,8 +93,8 @@ export const updateAdmin = (id, data, toast) => {
         console.error("Error during update account:", error.message);
       }
     }
-  }
   };
+};
 
 export const deleteAdmin = (id) => async (dispatch, getState) => {
   const token = getState().auth.token || localStorage.getItem("token");
@@ -105,5 +118,15 @@ export const deleteAdmin = (id) => async (dispatch, getState) => {
       } else {
         console.error("Error during delete account:", error.message);
       }
+    );
+
+    console.log("Hapus Akun Berhasil");
+    dispatch(setDeleteAdmin(id));
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      console.error("Error during delete account:", error.response.data);
+    } else {
+      console.error("Error during delete account:", error.message);
     }
-  };
+  }
+};
