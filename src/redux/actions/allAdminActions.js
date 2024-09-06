@@ -27,7 +27,7 @@ export const admin = () => async (dispatch, getState) => {
   }
 }
 
-export const addAdmin = (data) => async (dispatch, getState) => {
+export const addAdmin = (data, toast) => async (dispatch, getState) => {
   const token = getState().auth.token || localStorage.getItem("token");
     try {
       const response = await axios.post(
@@ -42,6 +42,7 @@ export const addAdmin = (data) => async (dispatch, getState) => {
       );
   
       console.log("Tambah Akun Berhasil", response);
+      toast.success("Berhasil menambah akun admin");
   
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -52,7 +53,7 @@ export const addAdmin = (data) => async (dispatch, getState) => {
     }
   };
 
-export const updateAdmin = (id, data) => {
+export const updateAdmin = (id, data, toast) => {
   return async (dispatch, getState) => {
     const token = getState().auth.token || localStorage.getItem("token");
     console.log(data);
@@ -70,6 +71,7 @@ export const updateAdmin = (id, data) => {
   
       console.log("Edit Akun Berhasil", response.data);
       dispatch(setUpdateAdmin(response.data.data));
+      toast.success("Berhasil update data admin");
   
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -96,6 +98,7 @@ export const deleteAdmin = (id) => async (dispatch, getState) => {
   
       console.log("Hapus Akun Berhasil");
       dispatch(setDeleteAdmin(id));
+      toast.success("Berhasil hapus akun admin");
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         console.error("Error during delete account:", error.response.data);

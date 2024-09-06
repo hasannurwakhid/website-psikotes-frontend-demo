@@ -1,5 +1,5 @@
 import axios from "axios";
-import { setUsers, setLoading, setError } from "../reducers/allUsersReducers";
+import { setUsers, setLoading, setError, setAverageScore, setDoneCount} from "../reducers/allUsersReducers";
 
 export const allUsers = () => async (dispatch, getState) => {
   dispatch(setLoading(true));
@@ -25,9 +25,32 @@ export const allUsers = () => async (dispatch, getState) => {
       dispatch(setError(error.response?.data?.message || 'Terjadi kesalahan'));
     } else {
         console.error("Terjadi kesalahan:", error);
-      dispatch(setError('Terjadi kesalahan yang tidak diketahui'));
+      dispatch(setError('Terjadi kesalahan'));
     }
   } finally {
     dispatch(setLoading(false));
+  }
+};
+
+export const getTotalPoint = () => async (dispatch, getState) => {
+  const token = getState().auth.token || localStorage.getItem("token");
+  try {
+    const response = await axios.get(
+      `https://backend-production-8357.up.railway.app/api/admin/totalPoints/average`,
+      {
+        headers: {
+            accept: "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+      }
+    );
+    const averageScore = response.data.data.averagePesertaPoints;
+    console.log("average:", averageScore);
+    dispatch(setAverageScore(averageScore));
+    const doneCount = response.data.data.doneCount;
+    console.log("doneCount:", doneCount);
+    dispatch(setDoneCount(doneCount));
+  } catch (error) {
+    dispatch(setError(error.response?.data?.message || 'Gagal memuat'));
   }
 };

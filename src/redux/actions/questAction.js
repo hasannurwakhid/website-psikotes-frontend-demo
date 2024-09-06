@@ -65,7 +65,7 @@ export const answerQuestion = (data, token) => async (dispatch, getState) => {
 };
 
 export const submitTest = (navigate) => async (dispatch, getState) => {
-  const token = state.auth.token;
+  const token = getState().auth.token;
   try {
     const response = await axios.get(
       `https://backend-production-8357.up.railway.app/api/peserta/submit`,
