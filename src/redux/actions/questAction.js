@@ -6,6 +6,7 @@ import {
   setTimer,
 } from "../reducers/questReducers";
 import { toast } from "react-toastify";
+import { checkIsDone } from "./authActions";
 
 export const getPesertaQuestion = (navigate) => async (dispatch, getState) => {
   const token = getState().auth.token;
@@ -78,7 +79,6 @@ export const submitTest = (navigate) => async (dispatch, getState) => {
     console.log("response submitTest", response.data.data);
     await dispatch(setPoint(response.data.data));
     await dispatch(checkIsDone(token, toast, navigate));
-    navigate("/result");
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log(error.response);

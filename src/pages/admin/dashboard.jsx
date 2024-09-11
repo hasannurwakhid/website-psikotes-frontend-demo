@@ -6,27 +6,6 @@ import Header from "../../components/header";
 import Sidebar from "../../components/sidebar";
 import Modal from "../../components/modal";
 
-function Modal({ isOpen, onClose, children }) {
-  if (!isOpen) return null;
-
-  return ReactDOM.createPortal(
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-10">
-      <div className="absolute inset-0 lg:left-[250px] lg:top-[63px] p-8 flex items-center justify-center z-50">
-        <div className="bg-white p-6 rounded-lg shadow-lg relative">
-          <button
-            className="absolute top-1 right-3 text-gray-500 text-2xl hover:text-red-700 z-50"
-            onClick={onClose}
-          >
-            &times;
-          </button>
-          {children}
-        </div>
-      </div>
-    </div>,
-    document.body
-  );
-}
-
 const timeFormat = (isoString) => {
   if (!isoString || isNaN(Date.parse(isoString))) return "-";
   const date = new Date(isoString);
@@ -81,7 +60,7 @@ function DashboardAdmin() {
     if (sidebarOpen) {
       setIsDetailAccOpen(false);
     }
-  }, [sidebarOpen]); 
+  }, [sidebarOpen]);
 
   useEffect(() => {
     dispatch(allUsers());
@@ -167,7 +146,9 @@ function DashboardAdmin() {
             <div className="bg-white p-6 rounded-lg shadow flex-col">
               <div className="text-gray-500 flex">Rata Rata Nilai Peserta</div>
               <div className="flex w-full mt-3 justify-between">
-                <div className="text-6xl font-bold">{Math.round(averageScore) || "0"}</div>
+                <div className="text-6xl font-bold">
+                  {Math.round(averageScore) || "0"}
+                </div>
                 <div className="relative w-20 h-20">
                   <svg className="w-full h-full" viewBox="0 0 100 50">
                     <image
@@ -186,8 +167,7 @@ function DashboardAdmin() {
                         y="10"
                         width="12"
                         height="40"
-                      />
-                      {" "}
+                      />{" "}
                     </g>
                   </svg>
                 </div>

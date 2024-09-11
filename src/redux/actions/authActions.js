@@ -110,17 +110,18 @@ export const checkIsDone =
         "https://backend-production-8357.up.railway.app/api/peserta/answerQuestion/isDone",
         {
           headers: {
+            accept: "application/json",
             Authorization: `Bearer ${token}`,
           },
         }
       );
       // Log hasil respons
-      const data = response.data.data;
-      console.log("dataisdone", data);
+      const data = response?.data?.data?.isDone;
+      console.log("dataisdone", data.isDone);
       // Pastikan tipe data yang diperoleh adalah boolean
       dispatch(setIsDone(data));
       // Cek tipe dan nilai data
-      console.log("Data type:", typeof data, "Data value:", data);
+      console.log("Data type:", typeof data, "Data value:", data.isDOne);
 
       if (data === "true" || data === true) {
         navigate("/result");

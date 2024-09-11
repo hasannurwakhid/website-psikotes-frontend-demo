@@ -154,7 +154,6 @@ function EditQuestions() {
     });
     setLoading(true);
     toggleEditConfirm();
-    window.location.reload();
   };
 
   const handleSaveNewQuestion = async () => {

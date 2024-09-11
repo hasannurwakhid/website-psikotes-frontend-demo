@@ -40,7 +40,7 @@ function Sidebar({ sidebarOpen, toggleSidebar }) {
         <ul>
           <li className="lg:hidden mb-4 bg-red-700 rounded-lg p-2 hover:bg-red-800">
             <div className="flex items-center ml-4">
-              <img src="img\icon_profil_white.svg" className="mr-5 w-7 h-7" />
+              <img src="\img\icon_profil_white.svg" className="mr-5 w-7 h-7" />
               <p>
                 <strong>{user.name}</strong>
               </p>
@@ -52,7 +52,7 @@ function Sidebar({ sidebarOpen, toggleSidebar }) {
           >
             <a href="#beranda" className="flex items-center ml-4">
               <img
-                src="img\beranda.svg"
+                src="\img\beranda.svg"
                 alt="Beranda"
                 className="mr-5 w-6 h-6"
               />
@@ -65,7 +65,7 @@ function Sidebar({ sidebarOpen, toggleSidebar }) {
           >
             <a href="#kumpulan_soal" className="flex items-center ml-4">
               <img
-                src="img\kumpulan_soal.svg"
+                src="\img\kumpulan_soal.svg"
                 alt="Kumpulan Soal"
                 className="mr-5 w-6 h-6"
               />
@@ -79,7 +79,7 @@ function Sidebar({ sidebarOpen, toggleSidebar }) {
             >
               <a href="#akun" className="flex items-center ml-4">
                 <img
-                  src="img\tambah_akun.svg"
+                  src="\img\tambah_akun.svg"
                   alt="Tambah Akun"
                   className="mr-5 w-6 h-6"
                 />

@@ -128,9 +128,9 @@ function Register() {
   };
 
   return (
-    <div className="flex bg-white h-screen">
+    <div className="flex bg-white min-h-screen ">
       {/* Sisi Kiri  */}
-      <div className="w-[720px] lg:px-16 max-sm:px-5 md:px-40 md:pt-7 flex flex-col justify-center">
+      <div className="w-2/5 lg:px-16 max-sm:px-5 md:px-40 md:pt-7 flex flex-col justify-center">
         <div className="m-4">
           <img src="/img/logo.svg" className="w-[70%]" />
           <div className="mt-3 mb-3 flex flex-col gap-2">
@@ -327,7 +327,7 @@ function Register() {
         </div>
       </div>
       {/* Sisi Kanan  */}
-      <div className="flex justify-start max-lg:hidden">
+      <div className="flex justify-start max-lg:hidden w-3/5">
         <img src="/img/bg_red.jpg" className="h-full" />
       </div>
     </div>

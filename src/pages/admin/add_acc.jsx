@@ -13,25 +13,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import { toast } from "react-toastify";
 
-function Modal({ isOpen, onClose, children }) {
-  if (!isOpen) return null;
-  return ReactDOM.createPortal(
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-25 z-10">
-      <div className="flex items-center justify-center w-full h-full">
-        <div className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-[70%] lg:w-[40%] max-h-[80vh] overflow-y-auto relative">
-          <button
-            className="absolute top-1 right-3 text-gray-500 text-2xl hover:text-red-700 z-50"
-            onClick={onClose}
-          >
-            &times;
-          </button>
-          {children}
-        </div>
-      </div>
-    </div>,
-    document.body
-  );
-}
 import Modal from "../../components/modal";
 
 function AddAcc() {
@@ -92,7 +73,7 @@ function AddAcc() {
       password,
     };
     dispatch(addAdmin(data, toast)).then(() => {
-      setIsAddAccOpen(false)
+      setIsAddAccOpen(false);
     });
     setTimeout(() => {
       window.location.reload();
@@ -132,8 +113,8 @@ function AddAcc() {
       toggleConfirm();
     }
     setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+      window.location.reload();
+    }, 1000);
   };
 
   // Filter admins berdasarkan input pencarian
