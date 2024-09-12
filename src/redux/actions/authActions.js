@@ -88,10 +88,6 @@ export const checkIsDone =
       dispatch(getUserProfile());
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        if (error.response && error.response.status === 401) {
-          toast.error("Sesi telah berakhir");
-          dispatch(logout(navigate, toast));
-        }
         if (error.response && error.response.status === 403) {
           toast.error("Anda tidak memiliki akses");
           dispatch(logout(navigate, toast));
