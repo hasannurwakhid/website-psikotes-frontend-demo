@@ -5,7 +5,6 @@ import {
   setUser,
   setUserProfil,
 } from "../reducers/authReducers";
-import { getPesertaQuestion } from "./questAction";
 
 export const login = (data, navigate, toast) => async (dispatch, getState) => {
   console.log(data);
@@ -19,18 +18,14 @@ export const login = (data, navigate, toast) => async (dispatch, getState) => {
         },
       }
     );
-    console.log("response", response);
     const user = response.data.data.user;
     const token = response.data.data.token;
-
-    console.log("Login Berhasil", token);
     dispatch(setToken(token));
     dispatch(setUser(user));
     await toast.success("Berhasil Login");
     navigate("/");
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.log(error.response.data.message);
       toast.error(error.response.data.message);
     }
   }
@@ -38,7 +33,6 @@ export const login = (data, navigate, toast) => async (dispatch, getState) => {
 
 export const register =
   (data, navigate, toast) => async (dispatch, getState) => {
-    console.log(data);
     try {
       const response = await axios.post(
         `https://backend-production-8357.up.railway.app/api/peserta/auth/register`,
@@ -49,44 +43,18 @@ export const register =
           },
         }
       );
-      console.log("Register Berhasil", response);
       await toast.success("Berhasil Register");
       navigate("/login");
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.log(error.response);
         toast.error(error.response.data.message);
         return;
       }
     }
   };
 
-export const noAccessToken = (navigate) => async (dispatch, getState) => {
-  const token = getState().auth.token;
-  try {
-    await axios.get(
-      `https://backend-production-8357.up.railway.app/api/peserta/getPesertaQuestions`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-  } catch (error) {
-    dispatch(setToken(null));
-    dispatch(setUser(null));
-    toast.error("Token kadaluarsa.");
-    setTimeout(() => {
-      navigate("/");
-      window.location.reload();
-    }, 1500);
-    toast.error(error);
-  }
-};
-
 export const getUserProfile = () => async (dispatch, getState) => {
   const token = getState().auth.token;
-  console.log("token GetUserProfile", token);
   try {
     const response = await axios.get(
       `https://backend-production-8357.up.railway.app/api/peserta/auth/profile`,
@@ -96,7 +64,6 @@ export const getUserProfile = () => async (dispatch, getState) => {
         },
       }
     );
-    console.log("response", response.data.data);
     dispatch(setUserProfil(response.data.data));
   } catch (error) {
     console.log(error.message);
@@ -116,23 +83,8 @@ export const checkIsDone =
         }
       );
       // Log hasil respons
-      const data = response?.data?.data?.isDone;
-      console.log("dataisdone", data.isDone);
-      // Pastikan tipe data yang diperoleh adalah boolean
+      const data = response?.data?.data;
       dispatch(setIsDone(data));
-      // Cek tipe dan nilai data
-      console.log("Data type:", typeof data, "Data value:", data.isDOne);
-
-      if (data === "true" || data === true) {
-        navigate("/result");
-        window.location.reload();
-        console.log("data true");
-      } else if (data === false || data === "false") {
-        dispatch(getPesertaQuestion(navigate));
-        console.log("data false");
-      } else {
-        console.error("Unexpected data value:", data);
-      }
       dispatch(getUserProfile());
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -153,22 +105,12 @@ export const checkIsDone =
     }
   };
 
-export const checkToken = (navigate) => (dispatch, getState) => {
-  const token = getState().auth.token;
-  if (!token) {
-    toast.error(
-      "Ups.. tidak dapat mengakses halaman, silakan masuk terlebih dahulu."
-    );
-    navigate("/login");
-  }
-};
-
 export const logout = (navigate, toast) => (dispatch) => {
   try {
     dispatch(setToken(null));
     dispatch(setUser(null));
     localStorage.removeItem("question");
-    navigate("/login");
+    navigate("/");
     toast.success("Berhasil log out.");
   } catch (error) {
     toast.error(error?.message);
@@ -177,7 +119,6 @@ export const logout = (navigate, toast) => (dispatch) => {
 
 // Fungsi login untuk admin
 export const loginadmin = (data, navigate) => async (dispatch) => {
-  console.log(data);
   try {
     const response = await axios.post(
       `https://backend-production-8357.up.railway.app/api/admin/auth/login`,
@@ -190,9 +131,6 @@ export const loginadmin = (data, navigate) => async (dispatch) => {
     );
 
     const { user, token } = response.data.data;
-
-    console.log("Admin Action", user);
-    console.log("Login Berhasil", token);
 
     if (token && token.split(".").length === 3) {
       // Simpan token dan user di state Redux

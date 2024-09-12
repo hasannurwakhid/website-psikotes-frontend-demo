@@ -9,7 +9,7 @@ import {
 } from "../../redux/actions/allCategoryAction";
 import Header from "../../components/header";
 import Sidebar from "../../components/sidebar";
-import Modal from "../../components/modal";
+import Modal from "../../modal/modal";
 
 function QuestCategory() {
   const [sidebarOpen, setSidebarOpen] = useState(false);

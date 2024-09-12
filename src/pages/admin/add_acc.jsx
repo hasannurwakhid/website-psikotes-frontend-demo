@@ -13,7 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import { toast } from "react-toastify";
 
-import Modal from "../../components/modal";
+import Modal from "../../modal/modal";
 
 function AddAcc() {
   const [sidebarOpen, setSidebarOpen] = useState(false);

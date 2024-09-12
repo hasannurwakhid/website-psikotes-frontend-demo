@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "../../components/header";
 import "@fortawesome/fontawesome-free/js/all.js";
 import { useDispatch, useSelector } from "react-redux";
 import { setAnswer, setQuestions } from "../../redux/reducers/questReducers";
 import {
   answerQuestion,
   getPesertaQuestion,
-  submitTest,
 } from "../../redux/actions/questAction";
 import { toast } from "react-toastify";
 import HeaderUser from "../../components/headerUser";
@@ -47,7 +45,6 @@ function Question() {
 
   useEffect(() => {
     setLoading(true);
-    console.log("submittedAnswerPage", submittedAnswer);
     if (!token) {
       setTimeout(() => {
         navigate("/login");
@@ -211,7 +208,7 @@ function Question() {
   return (
     <div className="flex flex-col max-sm:bg-gray-100">
       <HeaderUser />
-      {/* Tombol Baru dengan Posisi Absolut */}
+      {/* TOmbol untuk show grid di mobile and tablet */}
       <button
         className="lg:hidden top-[150px] z-50 left-[10px] transform -translate-x-1/2 fixed bg-yellow-300 text-white p-4 rounded hover:bg-yellow-400"
         onClick={modalQuestOpen}
@@ -254,17 +251,16 @@ function Question() {
                       onClick={() => {
                         handleButtonClick(quest, index);
                         setindex(index + 1);
-                        modalQuestClose();
                       }}
-                      className={`h-10 w-10 rounded border ${
+                      className={`h-10 w-10 rounded-lg border ${
                         selectedQuestionId === quest.id
-                          ? "bg-gray-300"
+                          ? "bg-gray-300 border-gray-400"
                           : isAnswered
-                          ? "bg-yellow-200" // Green background if the question is answered
+                          ? "bg-yellow-200 border-yellow-500" // Green background if the question is answered
                           : "bg-white" // Default white background
                       }`}
                     >
-                      {index + 1}
+                      <span>{index + 1}</span>
                     </button>
                   );
                 })}
@@ -283,10 +279,10 @@ function Question() {
         </div>
       )}
       <main className="flex-grow lg:mt-24 max-lg:mt-12 md:mt-20 z-10">
-        <div className="container mx-auto flex max-lg:flex-col px-6 pt-6 gap-6 max-lg:gap-2 ">
+        <div className="container mx-auto flex max-lg:flex-col px-6 pt-6  gap-2 max-lg:gap-2 ">
           {/* Time Mobile  */}
           <div className="bg-white p-2 rounded-xl border border-1 lg:hidden ">
-            <div className="flex flex-col items-center bg-red-200 justify-center m-2 py-2 rounded-xl border">
+            <div className="flex flex-col items-center bg-red-200 border-red-500 justify-center m-2 py-2 rounded-xl border">
               <p className="text-sm">Sisa Waktu</p>
               <p>
                 <strong>{formatTime(timeLeft)}</strong>
@@ -306,7 +302,7 @@ function Question() {
             <div className="border rounded-xl bg-white">
               {/* Number Grid */}
               <div className="flex flex-col items-center max-lg:hidden">
-                <div className="grid grid-cols-7 gap-2 p-4">
+                <div className="grid grid-cols-5 gap-3 p-8">
                   {questions.map((quest, index) => {
                     const isAnswered = selectedAnswers[quest.id]; // Check if the question is answered
                     return (
@@ -318,7 +314,7 @@ function Question() {
                         }}
                         className={`h-10 w-8 rounded-lg border ${
                           selectedQuestionId === quest.id
-                            ? "bg-gray-300"
+                            ? "bg-gray-300 border-gray-400"
                             : isAnswered
                             ? "bg-yellow-200 border-yellow-500" // Green background if the question is answered
                             : "bg-white" // Default white background
@@ -330,7 +326,7 @@ function Question() {
                   })}
                 </div>
                 <button
-                  className="py-2 my-5 w-[90%] bg-red-600 text-white hover:bg-red-700 rounded-xl"
+                  className="py-2 m-6 w-[80%] bg-red-600 text-white hover:bg-red-700 rounded-xl"
                   onClick={(e) => {
                     setIsModalOpen(true);
                   }}
@@ -343,12 +339,14 @@ function Question() {
 
           {/* <Text /> */}
           {/* Bagian kanan: Tampilan soal yang dipilih */}
-          <div className="border mb-4 w-[80%] max-lg:w-[100%] rounded-xl bg-white">
-            <div className="flex flex-col items-center justify-center p-3 h-[80px] border">
+          <div className="border mb-4 w-[90%] max-lg:w-[100%] rounded-xl bg-white">
+            <div className="flex items-center justify-between p-3 h-[80px] border">
+              <p>{selectedQuestion.Category.category}</p>
               <p>Pertanyaan {index}</p>
+              <p>{selectedQuestion.point} Point</p>
             </div>
             <hr />
-            <div className="lg:p-12 max-lg:p-8">
+            <div className="lg:py-6 lg:px-8 max-lg:p-8">
               <div className="pb-12 flex flex-col gap-4">
                 {selectedQuestion.question && (
                   <p className="">{selectedQuestion.question}</p>
@@ -361,55 +359,57 @@ function Question() {
                 )}
               </div>
               {imageBased === false ? (
-                // Jika soal berbasis gambar, tampilkan opsi dalam grid
+                // Jika option berbasis gambar, tampilkan opsi dalam grid
                 <div className="grid lg:grid-cols-3 md:grid-cols-2 justify-center items-center gap-6">
                   {options.map((option) => (
                     <button
                       key={option.id} // Pastikan key unik
-                      className={`border flex justify-center rounded-xl px-5 text-start ${
+                      className={`border h-full flex rounded-xl text-start ${
                         selectedAnswers[selectedQuestion.id] === option.id
-                          ? "bg-yellow-200"
+                          ? "bg-yellow-200 border-yellow-500"
                           : "hover:bg-yellow-100"
                       }`}
                       onClick={() => {
                         handleAnswerSelect(selectedQuestion.id, option.id);
                       }}
                     >
-                      <div className="flex gap-2">
-                        <span className="flex  py-5 text-lg">
-                          {selectedAnswers[selectedQuestion.id] ===
-                          option.id ? (
-                            <div className=" rounded-full border-2 w-5 h-5 border-black bg-black"></div>
-                          ) : (
-                            <div className="rounded-full border-2 w-5 h-5 border-black "></div>
+                      <div className="flex p-5 items-center">
+                        <div className="w-[10%] flex justify-center items-center">
+                          <span className="flex text-lg items-start justify-start">
+                            {selectedAnswers[selectedQuestion.id] ===
+                            option.id ? (
+                              <div className=" rounded-full border-2 w-5 h-5 border-black bg-black"></div>
+                            ) : (
+                              <div className="rounded-full border-2 w-5 h-5 border-black "></div>
+                            )}
+                          </span>
+                        </div>
+                        <div className="flex-col w-[90%] h-56 flex items-center justify-end gap-2">
+                          {option.image && (
+                            <img
+                              src={option.image}
+                              className="w-[90%] h-[85%]"
+                            />
                           )}
-                        </span>
-                        {option.image && (
-                          <img
-                            src={option.image}
-                            className="w-[85%] h-[85%] py-5"
-                          />
-                        )}
+                          {option.description && <p>{option.description}</p>}
+                        </div>
                       </div>
                     </button>
                   ))}
                 </div>
               ) : (
-                // Jika soal berbasis teks, tampilkan opsi tersusun ke bawah
+                // Jika option berbasis teks, tampilkan opsi tersusun ke bawah
                 <div className="flex flex-col gap-4">
                   {options.map((option, index) => (
                     <button
                       key={option.id} // Pastikan key unik
                       className={`border flex justify-start rounded-xl p-2 text-start ${
                         selectedAnswers[selectedQuestion.id] === option.id
-                          ? "bg-yellow-200"
+                          ? "bg-yellow-200 border-yellow-500"
                           : "hover:bg-yellow-100"
                       }`}
                       onClick={() => {
                         handleAnswerSelect(selectedQuestion.id, option.id);
-                        console.log(
-                          `Option ${option.id} selected for question ${selectedQuestion.id}`
-                        );
                       }}
                     >
                       <span className="mr-2 flex items-center justify-center h-6 px-3 text-lg">

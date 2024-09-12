@@ -11,7 +11,7 @@ import {
   updateQuestion,
 } from "../../redux/actions/allCategoryAction";
 import { setAnswerKey } from "../../redux/reducers/allCategoryReducers";
-import Modal from "../../components/modal";
+import Modal from "../../modal/modal";
 
 function EditQuestions() {
   const [sidebarOpen, setSidebarOpen] = useState(false);

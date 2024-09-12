@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { submitTest } from "../redux/actions/questAction";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function EndTest({ setCloseModal }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">

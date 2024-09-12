@@ -12,13 +12,13 @@ function Dashboard() {
   const dispatch = useDispatch();
   const token = useSelector((state) => state?.auth?.token);
   const user = useSelector((state) => state?.auth?.user);
-  const isDone = useSelector((state) => state?.auth?.profil?.isDone);
+  const dataIsDone = useSelector((state) => state?.auth?.isDone);
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
   useEffect(() => {
     dispatch(getUserProfile());
-    console.log("user", user);
+    dispatch(checkIsDone(token, toast, navigate));
   }, []);
 
   // Fungsi untuk mendapatkan nama hari dalam bahasa Indonesia
@@ -65,14 +65,36 @@ function Dashboard() {
     return `${dayName}, ${day} ${monthName} ${year}`;
   };
 
+  const formatTime = (milliseconds) => {
+    const totalSeconds = Math.floor(milliseconds / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+
+    return `${hours} jam ${minutes} menit`;
+  };
+
   const handleClick = async (e) => {
     if (token === null) {
       navigate("/login");
-    } else if (isDone === true) {
+    } else if (dataIsDone?.isDone === true) {
       navigate("/result");
     } else {
       openModal();
     }
+  };
+
+  const handleStartTest = async () => {
+    setLoading(true);
+    if (dataIsDone?.isDone === "true" || dataIsDone?.isDone === true) {
+      navigate("/result");
+      window.location.reload();
+    } else if (dataIsDone?.isDone === false || dataIsDone?.isDone === "false") {
+      dispatch(getPesertaQuestion(navigate));
+    } else {
+      console.error("Unexpected data value:", data);
+    }
+    closeModal();
+    setLoading(false);
   };
 
   return (
@@ -89,10 +111,12 @@ function Dashboard() {
           </p>
           {user ? (
             <p className="mx-4 mt-3 mb-2 ">
-              Selamat <strong>{user.name.split(" ")[0]}</strong>, Anda telah
+              Selamat <strong>{user?.name.split(" ")[0]}</strong>, Anda telah
               sampai pada seleksi tahap psikotes Dinas Kependudukan Dan
-              Pencatatan Sipil Kota Semarang. Anda akan mengerjakan soal yang
-              dibagi dalam beberapa sub-test.
+              Pencatatan Sipil Kota Semarang. Anda akan mengerjakan Soal
+              Psikotes sebanyak{" "}
+              <strong>{dataIsDone?.questionCount} soal</strong> yang dibagi
+              dalam beberapa sub-test.
             </p>
           ) : (
             <p className="mx-4 mt-3 mb-2 ">
@@ -110,7 +134,7 @@ function Dashboard() {
             <div className="px-8 py-4 text-center flex flex-col gap-1 rounded mx-4">
               <p className="text-sm">Durasi Pengerjaan</p>
               <p className="text-center text-xl">
-                <strong>1 jam 30 Menit</strong>
+                <strong>{formatTime(dataIsDone?.remainingTime)}</strong>
               </p>
             </div>
           )}
@@ -138,14 +162,23 @@ function Dashboard() {
                 </button>
                 <button
                   className="bg-red-600 hover:bg-red-700 text-white rounded-md px-4 py-2"
-                  onClick={() => {
-                    setLoading(true);
-                    dispatch(checkIsDone(token, toast, navigate));
-                    setLoading(false);
-                    closeModal();
-                  }}
+                  onClick={handleStartTest}
                 >
-                  Mulai
+                  {loading ? (
+                    <div className="flex items-center justify-center">
+                      <svg
+                        className="animate-spin h-5 w-5 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                      >
+                        <path d="M12 4V1M12 1v3m0 16v3M12 22v-3M6.293 6.293L4.879 4.879M4.879 4.879l1.414 1.414M18.364 18.364l1.414 1.414M19.778 19.778l-1.414-1.414M20 12a8 8 0 11-16 0 8 8 0 0116 0z" />
+                      </svg>
+                    </div>
+                  ) : (
+                    "Mulai"
+                  )}
                 </button>
               </div>
             </div>

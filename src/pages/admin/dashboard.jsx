@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { allUsers, getTotalPoint } from "../../redux/actions/allUsersActions";
 import Header from "../../components/header";
 import Sidebar from "../../components/sidebar";
-import Modal from "../../components/modal";
+import Modal from "../../modal/modal";
 
 const timeFormat = (isoString) => {
   if (!isoString || isNaN(Date.parse(isoString))) return "-";
