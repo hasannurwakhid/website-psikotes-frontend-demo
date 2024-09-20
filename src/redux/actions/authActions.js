@@ -45,7 +45,7 @@ export const register =
       );
       await toast.success("Berhasil Register");
       navigate("/login");
-    } catch (error) {
+    } catch (error) { 
       if (axios.isAxiosError(error)) {
         toast.error(error.response.data.message);
         return;

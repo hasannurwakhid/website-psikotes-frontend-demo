@@ -1,13 +1,9 @@
 import axios from "axios";
 import {
   setCategory,
-  setAddCategory,
   setUpdateCategory,
   setDeleteCategory,
   setQuestions,
-  setAddQuestions,
-  setUpdateQuestions,
-  setDeleteQuestions,
 } from "../reducers/allCategoryReducers";
 
 export const category = () => async (dispatch, getState) => {
