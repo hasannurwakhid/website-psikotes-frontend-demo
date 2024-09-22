@@ -130,7 +130,7 @@ function Register() {
   return (
     <div className="flex bg-white min-h-screen ">
       {/* Sisi Kiri  */}
-      <div className="w-2/5 lg:px-16 max-sm:px-5 md:px-40 md:pt-7 flex flex-col justify-center">
+      <div className="lg:w-2/5 lg:px-16 max-sm:px-5 md:px-40 md:pt-7 flex flex-col justify-center">
         <div className="m-4">
           <img
             src="/img/logo.svg"

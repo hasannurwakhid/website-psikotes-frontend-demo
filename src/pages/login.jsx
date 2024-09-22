@@ -57,7 +57,7 @@ function Login() {
   return (
     <div className="flex bg-white h-screen">
       {/* Sisi Kiri  */}
-      <div className="w-[720px]  lg:px-16 max-sm:px-5 md:px-40 md:pt-7 flex flex-col justify-center">
+      <div className="w-[720px] lg:px-16 max-sm:px-5 md:px-40 md:pt-7 flex flex-col justify-center">
         <div className="m-4">
           <img
             src="\img\logo.svg"
