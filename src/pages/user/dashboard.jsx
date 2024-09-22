@@ -69,8 +69,9 @@ function Dashboard() {
     const totalSeconds = Math.floor(milliseconds / 1000);
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
 
-    return `${hours} jam ${minutes} menit`;
+    return `${hours} jam ${minutes} menit ${seconds} detik`;
   };
 
   const handleClick = async (e) => {
@@ -132,10 +133,21 @@ function Dashboard() {
           </div>
           {token && (
             <div className="px-8 py-4 text-center flex flex-col gap-1 rounded mx-4">
-              <p className="text-sm">Durasi Pengerjaan</p>
-              <p className="text-center text-xl">
-                <strong>{formatTime(dataIsDone?.remainingTime)}</strong>
-              </p>
+              {user?.isDone ? (
+                <div>
+                  <p className="text-sm">Waktu Pengerjaan</p>
+                  <p className="text-center text-xl">
+                    <strong>{formatTime(user?.totalTime)}</strong>
+                  </p>
+                </div>
+              ) : (
+                <div>
+                  <p className="text-sm">Durasi Pengerjaan</p>
+                  <p className="text-center text-xl">
+                    <strong>{formatTime(dataIsDone?.remainingTime)}</strong>
+                  </p>
+                </div>
+              )}
             </div>
           )}
           <button
@@ -144,7 +156,15 @@ function Dashboard() {
               handleClick();
             }}
           >
-            Masuk
+            {user?.isDone ? (
+              <div>
+                <p className="text-sm">Lihat Skor</p>
+              </div>
+            ) : (
+              <div>
+                <p className="text-sm">Masuk</p>
+              </div>
+            )}
           </button>
         </div>
         {/* Modal */}

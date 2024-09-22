@@ -9,6 +9,7 @@ function Dashboard() {
   const dispatch = useDispatch();
   const point = useSelector((state) => state?.auth?.profil?.pointTotal);
   const isDone = useSelector((state) => state?.auth?.profil?.isDone);
+  console.log("isDone", isDone);
   const token = useSelector((state) => state?.auth?.token);
 
   useEffect(() => {

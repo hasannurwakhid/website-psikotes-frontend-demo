@@ -16,6 +16,7 @@ function Question() {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
   const user = useSelector((state) => state.auth.user);
+  const isDone = useSelector((state) => state?.auth?.profil?.isDone);
   const answer = useSelector((state) => state.question.answers || {});
   const [selectedAnswers, setselectedAnswers] = useState(answer || {});
   const [selectedmultipleChoiceId, setSelectedmultipleChoiceId] =
@@ -52,8 +53,8 @@ function Question() {
       }, 1000);
       toast.error("Anda belum memiliki akses, silakan login.");
     }
-    if (user.isDone === true) {
-      navigate("/");
+    if (isDone === true) {
+      navigate("/result");
       window.location.reload();
       return;
     }

@@ -59,17 +59,24 @@ function Login() {
       {/* Sisi Kiri  */}
       <div className="w-[720px]  lg:px-16 max-sm:px-5 md:px-40 md:pt-7 flex flex-col justify-center">
         <div className="m-4">
-          <img src="\img\logo.svg" className="sm:w-[70%]" />
+          <img
+            src="\img\logo.svg"
+            className="sm:w-[70%]"
+            onClick={(e) => {
+              navigate("/");
+            }}
+          />
           <div className="">
             <div className="mt-4 mb-6 flex flex-col gap-2 ">
               <p className="text-red-600 text-3xl">
                 <strong>Selamat Datang,</strong>
               </p>
               <p className="text-3xl">
-                <strong>Peserta Ujian Psikotes</strong>
+                <strong>Admin Ujian Psikotes</strong>
               </p>
               <p className="text-sm">
-                Silahkan masuk ke akun anda sebelum mengerjakan ujian psikotes
+                Silahkan masuk ke akun anda untuk mendapatkan akses Admin ujian
+                psikotes
               </p>
             </div>
             <form action="" className="flex flex-col gap-4 sm:mt-5">

@@ -132,7 +132,13 @@ function Register() {
       {/* Sisi Kiri  */}
       <div className="w-2/5 lg:px-16 max-sm:px-5 md:px-40 md:pt-7 flex flex-col justify-center">
         <div className="m-4">
-          <img src="/img/logo.svg" className="w-[70%]" />
+          <img
+            src="/img/logo.svg"
+            className="w-[70%]"
+            onClick={(e) => {
+              navigate("/");
+            }}
+          />
           <div className="mt-3 mb-3 flex flex-col gap-2">
             <p className="text-red-600 text-3xl">
               <strong>Selamat Datang,</strong>
@@ -250,7 +256,11 @@ function Register() {
               </div>
             </div>
 
-            <div className={`relative ${errors.password ? "mt-5 max-lg:mt-10" : ""}`}>
+            <div
+              className={`relative ${
+                errors.password ? "mt-5 max-lg:mt-10" : ""
+              }`}
+            >
               <input
                 type={showConfirmPassword ? "text" : "password"}
                 className={`w-full p-2 rounded-xl border ${
