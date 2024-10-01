@@ -341,7 +341,7 @@ function Question() {
           {/* <Text /> */}
           {/* Bagian kanan: Tampilan soal yang dipilih */}
           <div className="border mb-4 w-[90%] max-lg:w-[100%] rounded-xl bg-white">
-            <div className="flex items-center justify-between p-3 h-[80px] border">
+            <div className="flex items-center justify-between lg:px-8 max-lg:p-8 h-[80px] border">
               <p>{selectedQuestion.Category.category}</p>
               <p>Pertanyaan {index}</p>
               <p>{selectedQuestion.point} Point</p>

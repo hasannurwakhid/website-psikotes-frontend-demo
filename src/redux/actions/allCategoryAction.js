@@ -255,6 +255,32 @@ export const updateMultipleChoices = (data, id) => {
   };
 };
 
+export const updateAnswerKey =
+  (id, dataAnswerKey) => async (dispatch, getState) => {
+    const token = getState().auth.token || localStorage.getItem("token");
+    const data = { multipleChoiceId: dataAnswerKey };
+    try {
+      await axios.delete(
+        `https://backend-production-8357.up.railway.app/api/admin/answerKeys/${id}`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Pastikan token disertakan di sini
+          },
+        }
+      );
+
+      console.log("Update Answer Key Soal Berhasil");
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.error("Error during delete account:", error.response.data);
+      } else {
+        console.error("Error during delete account:", error.message);
+      }
+    }
+  };
+
 export const deleteQuestion = (id) => async (dispatch, getState) => {
   const token = getState().auth.token || localStorage.getItem("token");
   try {

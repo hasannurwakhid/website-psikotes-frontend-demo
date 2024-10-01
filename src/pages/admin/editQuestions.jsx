@@ -7,6 +7,7 @@ import {
   addQuestions,
   deleteQuestion,
   questions,
+  updateAnswerKey,
   updateMultipleChoices,
   updateQuestion,
 } from "../../redux/actions/allCategoryAction";
@@ -18,6 +19,7 @@ function EditQuestions() {
   const location = useLocation();
   const dispatch = useDispatch();
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [dataUpdateAnswerKey, setUpdateAnswerKey] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isConfirmEditOpen, setIsConfirmEditOpen] = useState(false);
   const [isAddQuestionOpen, setIsAddQuestionOpen] = useState(false);
@@ -119,8 +121,8 @@ function EditQuestions() {
     toggleConfirm();
   };
 
-  const handleEditClick = (index, id) => {
-    setId(id);
+  const handleEditClick = (index) => {
+    setId(index);
     setEditedQuestion(questionList[index].question); // Set question value to state
     setEditedChoices(questionList[index].MultipleChoices); // Set choices to state
     setEditedPoint(questionList[index].point); // Set point to state
@@ -152,6 +154,7 @@ function EditQuestions() {
       // Kirim permintaan update untuk setiap pilihan
       await dispatch(updateMultipleChoices(updatedChoice, choice.id));
     });
+
     setLoading(true);
     toggleEditConfirm();
   };
@@ -411,13 +414,13 @@ function EditQuestions() {
               </button>
             </div>
           </Modal>
-          {/* Modal */}
+          {/* Modal Edit */}
           {isConfirmEditOpen && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
               <div className="bg-white p-12 rounded-lg shadow-lg w-[60%] mt-20 lg:ml-[250px] max-h-[80vh] overflow-y-auto">
                 <div className="flex gap-4 items-start">
                   <div className="flex flex-col gap-3 w-full">
-                    {questionList[id].question && (
+                    {questionList[id]?.question && (
                       <input
                         type="text"
                         className="p-2 border-b border-gray-600 w-full"
@@ -426,7 +429,7 @@ function EditQuestions() {
                         onChange={(e) => setEditedQuestion(e.target.value)} // Update question value
                       />
                     )}
-                    {questionList[id].image && (
+                    {questionList[id]?.image && (
                       <div>
                         <img src={questionList[id].image} alt="" />
                       </div>
@@ -509,6 +512,18 @@ function EditQuestions() {
                         <option value="10">10 Point</option>
                         <option value="15">15 Point</option>
                         <option value="20">20 Point</option>
+                      </select>
+                      <select
+                        className="border border-gray-300 w-1/2 rounded-md px-4 py-2 text-gray-700 bg-white"
+                        value={dataUpdateAnswerKey}
+                        onChange={(e) => setUpdateAnswerKey(e.target.value)}
+                      >
+                        <option value="">Kunci Jawaban</option>
+                        <option value="1">Correct Answer 1</option>
+                        <option value="2">Correct Answer 2</option>
+                        <option value="3">Correct Answer 3</option>
+                        <option value="4">Correct Answer 4</option>
+                        <option value="5">Correct Answer 5</option>
                       </select>
                     </div>
                     <div className="flex gap-3">
@@ -660,12 +675,11 @@ function EditQuestions() {
                     </div>
                   </div>
                 </div>
-                <div className="mt-12"></div>
-                <div className="flex justify-between mt-6 items-center gap-2">
-                  <div>
+                <div className="flex flex-col gap-2">
+                  <div className="flex justify-between gap-2 my-4">
                     {/* Dropdown for Points */}
                     <select
-                      className="border border-gray-300 rounded-md px-4 py-2 text-gray-700 bg-white"
+                      className="border border-gray-300 w-1/2 rounded-md px-4 py-2 text-gray-700 bg-white"
                       value={newQuestion.point}
                       onChange={(e) =>
                         setNewQuestion({
@@ -680,34 +694,27 @@ function EditQuestions() {
                       <option value="15">15 Point</option>
                       <option value="20">20 Point</option>
                     </select>
-                  </div>
-                  {/* Dropdown for Correct Answer */}
-                  <select
-                    className="border border-gray-300 rounded-md px-4 py-2 text-gray-700 bg-white"
-                    value={newQuestion.correctAnswer}
-                    onChange={(e) =>
-                      setNewQuestion({
-                        ...newQuestion,
-                        correctAnswer: e.target.value,
-                      })
-                    }
-                  >
-                    <option value="">Kunci Jawaban</option>
-                    <option value="1">Correct Answer 1</option>
-                    <option value="2">Correct Answer 2</option>
-                    <option value="3">Correct Answer 3</option>
-                    <option value="4">Correct Answer 4</option>
-                    <option value="5">Correct Answer 5</option>
-                  </select>
-                  <div>
-                    <button
-                      className="bg-gray-300 text-gray-700 rounded-md px-4 py-2 hover:bg-gray-400 hover:text-gray-200"
-                      onClick={toggleAddQuestion}
+                    <select
+                      className="border border-gray-300 w-1/2 rounded-md px-4 py-2 text-gray-700 bg-white"
+                      value={newQuestion.correctAnswer}
+                      onChange={(e) =>
+                        setNewQuestion({
+                          ...newQuestion,
+                          correctAnswer: e.target.value,
+                        })
+                      }
                     >
-                      Batal
-                    </button>
+                      <option value="">Kunci Jawaban</option>
+                      <option value="1">Correct Answer 1</option>
+                      <option value="2">Correct Answer 2</option>
+                      <option value="3">Correct Answer 3</option>
+                      <option value="4">Correct Answer 4</option>
+                      <option value="5">Correct Answer 5</option>
+                    </select>
+                  </div>
+                  <div className="flex flex-col justify-between gap-2">
                     <button
-                      className="bg-blue-600 text-white rounded-md px-4 py-2 hover:bg-red-700"
+                      className="bg-blue-600 w-full text-white rounded-md px-4 py-2 hover:bg-blue-700"
                       onClick={handleSaveNewQuestion}
                     >
                       {loading ? (
@@ -723,8 +730,14 @@ function EditQuestions() {
                           </svg>
                         </div>
                       ) : (
-                        "Daftar"
+                        "Tambah"
                       )}
+                    </button>
+                    <button
+                      className="bg-gray-300 w-full text-gray-700 rounded-md px-4 py-2 hover:bg-gray-400 hover:text-gray-200"
+                      onClick={toggleAddQuestion}
+                    >
+                      Batal
                     </button>
                   </div>
                 </div>
