@@ -159,16 +159,16 @@ function QuestCategory() {
               <thead>
                 <tr>
                   <th className="py-3 px-6 font-medium text-gray-600 w-1/2">
-                    Kategori Soal
+                    <strong>Kategori Soal</strong>
                   </th>
                   <th className="py-3 px-6 font-medium text-gray-600 w-1/6 text-center">
-                    Jumlah soal
+                    <strong>Jumlah soal</strong>
                   </th>
                   <th className="py-3 px-6 font-medium text-gray-600 w-1/6 text-center">
-                    Detail
+                    <strong> Detail</strong>
                   </th>
                   <th className="py-3 px-6 font-medium text-gray-600 w-1/6 text-center">
-                    Hapus
+                    <strong>Hapus</strong>
                   </th>
                 </tr>
               </thead>

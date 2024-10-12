@@ -259,8 +259,11 @@ export const updateAnswerKey =
   (id, dataAnswerKey) => async (dispatch, getState) => {
     const token = getState().auth.token || localStorage.getItem("token");
     const data = { multipleChoiceId: dataAnswerKey };
+    console.log("data", data);
+    console.log("id", id);
+    console.log("token", token);
     try {
-      await axios.delete(
+      await axios.put(
         `https://backend-production-8357.up.railway.app/api/admin/answerKeys/${id}`,
         data,
         {
@@ -274,9 +277,12 @@ export const updateAnswerKey =
       console.log("Update Answer Key Soal Berhasil");
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        console.error("Error during delete account:", error.response.data);
+        console.error(
+          "Error during updateAnswerKey account:",
+          error.response.data
+        );
       } else {
-        console.error("Error during delete account:", error.message);
+        console.error("Error during updateAnswerKey account:", error.message);
       }
     }
   };

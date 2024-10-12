@@ -14,11 +14,11 @@ export const allUsers = () => async (dispatch, getState) => {
           },
       }
     );
-
     console.log("Respons lengkap dari server:", response);
     const users = response.data.data;
     console.log("Data Peserta", users);
     dispatch(setUsers(users));
+
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log("API Error Response:", error.respons);
@@ -54,3 +54,4 @@ export const getTotalPoint = () => async (dispatch, getState) => {
     dispatch(setError(error.response?.data?.message || 'Gagal memuat'));
   }
 };
+

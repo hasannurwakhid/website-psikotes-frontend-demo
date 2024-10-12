@@ -68,7 +68,7 @@ function Header({ sidebarOpen, toggleSidebar }) {
             </p>
             <img src="\img\icon_profil.svg" className="w-[32px]" />
             {dropdownOpen && (
-              <div className="absolute right-0 mt-[200px] bg-white shadow-lg border rounded-md w-48 z-40">
+              <div className="absolute right-0 mt-[200px] bg-white shadow-lg border rounded-md z-40">
                 <div className="p-4">
                   <p className="font-semibold">{user.name}</p>
                   <p className="text-gray-600">{user.email}</p>

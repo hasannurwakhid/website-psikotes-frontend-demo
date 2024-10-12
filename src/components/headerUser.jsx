@@ -46,7 +46,7 @@ function HeaderUser({ sidebarOpen, toggleSidebar }) {
               className="lg:w-[32px] max-lg:w-[24px] md:w-[28px]"
             />
             {dropdownOpen && (
-              <div className="absolute right-0 lg:mt-[200px] max-lg:mt-[150px] bg-white shadow-lg border rounded-md w-56 z-40">
+              <div className="absolute right-0 lg:mt-[200px] max-lg:mt-[150px] bg-white shadow-lg border rounded-md z-40">
                 <div className="p-4">
                   <p className="font-semibold">{user.name}</p>
                   <p className="text-gray-600">{user.email}</p>

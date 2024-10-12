@@ -23,8 +23,8 @@ function EditQuestions() {
   const [loading, setLoading] = useState(false);
   const [isConfirmEditOpen, setIsConfirmEditOpen] = useState(false);
   const [isAddQuestionOpen, setIsAddQuestionOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null); // State untuk menyimpan gambar
   const [id, setId] = useState(null);
+  const [index, setIndex] = useState(null);
   const questionList = useSelector((auth) => auth?.allCategory?.questions);
   const answerKeys = useSelector((auth) => auth?.allCategory?.answerKey);
   const [selectedValue, setSelectedValue] = useState({
@@ -63,7 +63,7 @@ function EditQuestions() {
   }, [dispatch, selectedValue.categoryName]);
 
   useEffect(() => {
-    console.log("questionList", questionList);
+    console.log(" ", questionList);
     console.log("answerKeys", answerKeys);
     console.log("editedChoices", editedChoices);
   });
@@ -121,21 +121,24 @@ function EditQuestions() {
     toggleConfirm();
   };
 
-  const handleEditClick = (index) => {
-    setId(index);
+  const handleEditClick = (index, id) => {
+    setId(id);
+    setIndex(index);
     setEditedQuestion(questionList[index].question); // Set question value to state
     setEditedChoices(questionList[index].MultipleChoices); // Set choices to state
     setEditedPoint(questionList[index].point); // Set point to state
     toggleEditConfirm();
   };
 
+  console.log("editedQuestion", editedQuestion);
+
   const handleSaveChanges = async (e) => {
     setLoading(true);
     const updatedQuestion = {
-      question: editedQuestion.question,
-      point: editedQuestion.point,
-      correctAnswer: editedQuestion.correctAnswer, // Tambahkan correctAnswer
-      categoryId: selectedValue.categoryName.id,
+      question: editedQuestion,
+      point: editedPoint,
+      correctAnswer: editedQuestion[id]?.correctAnswer, // Tambahkan correctAnswer
+      categoryId: selectedValue?.categoryName?.id,
       image: editedImage,
     };
     console.log("updatedQuestion", updatedQuestion);
@@ -146,14 +149,16 @@ function EditQuestions() {
     // Lakukan iterasi pada setiap pilihan (MultipleChoices)
     editedChoices.forEach(async (choice) => {
       const updatedChoice = {
-        description: choice.description, // Deskripsi pilihan yang sudah diubah
-        image: choice.image, // Gambar pilihan jika ada
+        description: choice?.description, // Deskripsi pilihan yang sudah diubah
+        imageMultipleChoice: choice?.image, // Gambar pilihan jika ada
       };
       console.log("updatedChoice", updatedChoice);
 
       // Kirim permintaan update untuk setiap pilihan
       await dispatch(updateMultipleChoices(updatedChoice, choice.id));
     });
+    //Kirim kunci jawaban terbaru
+    await dispatch(updateAnswerKey(id, dataUpdateAnswerKey));
 
     setLoading(true);
     toggleEditConfirm();
@@ -218,14 +223,33 @@ function EditQuestions() {
     }
   };
 
+  const fileInputRefForEditedQuestion = useRef(null);
+
+  const handleSvgClickForEditedQuestion = () => {
+    if (fileInputRefForEditedQuestion.current) {
+      fileInputRefForEditedQuestion.current.click();
+    }
+  };
+
+  const handleFileChangeForEditedQuestion = (file) => {
+    if (file) {
+      if (file instanceof File) {
+        setEditedImage(file);
+      } else {
+        console.error("File is not valid");
+      }
+    }
+  };
+
   return (
     <div className="flex flex-col maxsm:bg-gray-100">
       <Header sidebarOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
       <div className="relative flex flex-grow">
         <Sidebar sidebarOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
         <main className="flex-grow lg:ml-[250px] p-8 mt-[63px] lg:mt-20 z-10">
-          <div className="flex justify-between items-center mb-3 pl-1 pr-1">
-            <div className="bg-white  text-xl w-[50%] flex rounded-xl p-3 gap-4 shadow">
+          {/* Nama Kategori */}
+          <div className="flex justify-between items-center mb-3 gap-2 pl-1 pr-1">
+            <div className="bg-white  text-xl  flex items-center rounded-xl p-3 gap-4 shadow">
               <label className="font-bold">Kategori Soal: </label>
               <input
                 type="text"
@@ -237,19 +261,19 @@ function EditQuestions() {
                     categoryName: e.target.value,
                   })
                 }
-                className="border rounded-lg px-4 py-2 h-8 font-semibold"
+                className="border rounded-lg p-2 font-semibold"
               />
             </div>
             <div className="flex justify-between">
               <button
-                className="flex justify-center items-center w-[120px] h-10 bg-blue-600 text-white hover:bg-blue-700 hover:text-gray-100 rounded-lg shadow font-bold"
+                className="flex justify-center items-center p-2 bg-blue-600 text-white hover:bg-blue-700 hover:text-gray-100 rounded-lg shadow font-bold"
                 onClick={toggleAddQuestion}
               >
                 Tambah Soal
               </button>
             </div>
           </div>
-
+          {/* Daftar Soal */}
           {questionList.length > 0 &&
             questionList.map((quest, index) => (
               <div
@@ -348,53 +372,60 @@ function EditQuestions() {
                     </div>
                   )}
                 </div>
-                <div className="flex justify-end m-4 space-x-2">
-                  <button
-                    className="text-gray-400 hover:text-gray-500 mt-[1px]"
-                    onClick={() => {
-                      handleEditClick(index, quest.id);
-                    }}
-                  >
-                    <svg
-                      className="h-8 w-8"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
+                <div className="flex justify-between">
+                  <div className="flex items-center m-4 space-x-2 bg-yellow-200 px-3 rounded-md">
+                    <p>{questionList[index].point} Point</p>
+                  </div>
+                  <div className="flex justify-end m-4 space-x-2">
+                    {/* Icon Edit */}
+                    <button
+                      className="text-gray-400 hover:text-gray-500 mt-[1px]"
+                      onClick={() => {
+                        handleEditClick(index, quest.id);
+                      }}
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M11 5H7a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M15.586 4.586a2 2 0 112.828 2.828L10 15.828l-4 1 1-4 8.586-8.586z"
-                      />
-                    </svg>
-                  </button>
-                  <button
-                    className="text-gray-400 hover:text-gray-500"
-                    onClick={() => {
-                      handleDeleteClick(quest.id);
-                    }}
-                  >
-                    <svg
-                      className="h-6 w-6"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
+                      <svg
+                        className="h-8 w-8"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M11 5H7a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M15.586 4.586a2 2 0 112.828 2.828L10 15.828l-4 1 1-4 8.586-8.586z"
+                        />
+                      </svg>
+                    </button>
+                    {/* Icon Delete */}
+                    <button
+                      className="text-gray-400 hover:text-gray-500"
+                      onClick={() => {
+                        handleDeleteClick(quest.id);
+                      }}
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m2 0v14a2 2 0 01-2 2H8a2 2 0 01-2-2V6h12z"
-                      />
-                    </svg>
-                  </button>
+                      <svg
+                        className="h-6 w-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m2 0v14a2 2 0 01-2 2H8a2 2 0 01-2-2V6h12z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
-          {/* Confirm Delete Modal */}
+          {/* Modal Delete */}
           <Modal isOpen={isConfirmOpen} onClose={toggleConfirm}>
             <p className="py-4">Apakah Anda yakin ingin menghapus soal ini?</p>
             <div className="flex justify-end mt-2">
@@ -417,25 +448,36 @@ function EditQuestions() {
           {/* Modal Edit */}
           {isConfirmEditOpen && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-              <div className="bg-white p-12 rounded-lg shadow-lg w-[60%] mt-20 lg:ml-[250px] max-h-[80vh] overflow-y-auto">
-                <div className="flex gap-4 items-start">
+              <div className="bg-white p-12 rounded-lg shadow-lg w-[60%] max-lg:w-[90%] mt-20 lg:ml-[250px] max-h-[80vh] overflow-y-auto">
+                <div className="flex justify-end items-center">
+                  <p
+                    className=" rounded text-bold text-3xl cursor-pointer relative -top-5 -right-1 hover:text-red-500"
+                    onClick={toggleEditConfirm}
+                  >
+                    x
+                  </p>
+                </div>
+                <div className="flex items-start">
                   <div className="flex flex-col gap-3 w-full">
-                    {questionList[id]?.question && (
-                      <input
-                        type="text"
-                        className="p-2 border-b border-gray-600 w-full"
+                    {/* Input Pertanyaan */}
+                    {questionList[index]?.question && (
+                      <textarea
+                        className="p-2 border-b border-gray-600 w-full border rounded-md"
                         placeholder="Pertanyaan"
                         value={editedQuestion}
                         onChange={(e) => setEditedQuestion(e.target.value)} // Update question value
                       />
                     )}
-                    {questionList[id]?.image && (
+                    {questionList[index]?.image && (
                       <div>
-                        <img src={questionList[id].image} alt="" />
+                        <img src={questionList[index].image} alt="" />
                       </div>
                     )}
                   </div>
-                  <button className="hover:bg-gray-200 p-2 rounded-md">
+                  <button
+                    className="hover:bg-gray-200 p-2 rounded-md mt-4"
+                    onClick={() => handleSvgClickForEditedQuestion()} // Fungsi untuk trigger input file question
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -451,11 +493,29 @@ function EditQuestions() {
                       />
                     </svg>
                   </button>
+
+                  {/* Input file yang tersembunyi untuk question */}
+                  <input
+                    type="file"
+                    className="hidden"
+                    ref={fileInputRefForEditedQuestion} // Ref untuk input file pertanyaan
+                    onChange={(e) =>
+                      handleFileChangeForEditedQuestion(e.target.files[0])
+                    } // Fungsi untuk menangani file question
+                    accept="image/*"
+                  />
                 </div>
-                <div className="mt-12">
+                {/* Opsi Jawaban */}
+                <div className="mt-6">
                   {editedChoices.map((choices, index) => (
                     <div className="flex gap-3  my-4">
-                      <div className="rounded-full border-2 mt-3 w-5 h-5 border-black"></div>
+                      <span className="flex items-center text-lg">
+                        {answerKeys?.[id] === choices.id ? (
+                          <div className=" rounded-full border-2 w-5 h-5 border-black bg-black"></div>
+                        ) : (
+                          <div className="rounded-full border-2 w-5 h-5 border-black "></div>
+                        )}
+                      </span>
                       <div className="w-full flex flex-col gap-4">
                         <div className="flex items-center">
                           <input
@@ -498,51 +558,45 @@ function EditQuestions() {
                     </div>
                   ))}
                 </div>
-                <div>
-                  <div className="flex justify-between mt-6 items-center gap-2">
-                    {/* Dropdown */}
-                    <div>
-                      {/* Dropdown for Points */}
-                      <select
-                        className="border border-gray-300 rounded-md px-4 py-2 text-gray-700 bg-white"
-                        value={editedPoint}
-                        onChange={(e) => setEditedPoint(e.target.value)} // Update point value
-                      >
-                        <option value="5">5 Point</option>
-                        <option value="10">10 Point</option>
-                        <option value="15">15 Point</option>
-                        <option value="20">20 Point</option>
-                      </select>
-                      <select
-                        className="border border-gray-300 w-1/2 rounded-md px-4 py-2 text-gray-700 bg-white"
-                        value={dataUpdateAnswerKey}
-                        onChange={(e) => setUpdateAnswerKey(e.target.value)}
-                      >
-                        <option value="">Kunci Jawaban</option>
-                        <option value="1">Correct Answer 1</option>
-                        <option value="2">Correct Answer 2</option>
-                        <option value="3">Correct Answer 3</option>
-                        <option value="4">Correct Answer 4</option>
-                        <option value="5">Correct Answer 5</option>
-                      </select>
-                    </div>
-                    <div className="flex gap-3">
-                      {/* Button Batal */}
-                      <button
-                        className="bg-gray-300 text-gray-700 rounded-md px-4 py-2 hover:bg-gray-400 hover:text-gray-200"
-                        onClick={toggleEditConfirm}
-                      >
-                        Batal
-                      </button>
 
-                      {/* Button Ya, Saya yakin */}
-                      <button
-                        className="bg-blue-600 text-white rounded-md px-4 py-2 hover:bg-red-700"
-                        onClick={handleSaveChanges}
-                      >
-                        Simpan
-                      </button>
-                    </div>
+                <div className="flex flex-col mt-6 items-center gap-6">
+                  {/* Dropdown */}
+                  <div className="flex gap-3 w-full justify-around">
+                    {/* Dropdown for Points */}
+                    <select
+                      className="border border-gray-300 w-1/2 rounded-md px-4 py-2 text-gray-700 bg-white"
+                      value={editedPoint}
+                      onChange={(e) => setEditedPoint(e.target.value)} // Update point value
+                    >
+                      <option value="5">5 Point</option>
+                      <option value="10">10 Point</option>
+                      <option value="15">15 Point</option>
+                      <option value="20">20 Point</option>
+                    </select>
+                    <select
+                      className="border border-gray-300 w-1/2 rounded-md px-4 py-2 text-gray-700 bg-white"
+                      value={dataUpdateAnswerKey}
+                      onChange={(e) => setUpdateAnswerKey(e.target.value)}
+                    >
+                      <option value="">Kunci Jawaban</option>
+                      {editedChoices.map((choices) => (
+                        <option value={choices?.id}>
+                          {choices.description && (
+                            <span>{choices.description}</span>
+                          )}
+                          {choices.image && <img src={choices.image} alt="" />}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="flex flex-col gap-3 w-full justify-around">
+                    {/* Button Ya, Saya yakin */}
+                    <button
+                      className="bg-blue-600 text-white rounded-md px-4 py-2 hover:bg-red-700"
+                      onClick={handleSaveChanges}
+                    >
+                      Simpan
+                    </button>
                   </div>
                 </div>
               </div>

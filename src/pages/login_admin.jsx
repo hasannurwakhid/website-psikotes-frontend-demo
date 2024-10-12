@@ -161,14 +161,6 @@ function Login() {
                   "Masuk"
                 )}
               </button>
-              <button
-                className="text-blue-600 hover:text-blue-700"
-                onClick={(e) => {
-                  navigate("/register");
-                }}
-              >
-                Belum punya akun?
-              </button>
             </div>
           </div>
         </div>
