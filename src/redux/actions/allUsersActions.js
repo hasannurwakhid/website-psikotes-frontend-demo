@@ -1,5 +1,11 @@
 import axios from "axios";
-import { setUsers, setLoading, setError, setAverageScore, setDoneCount} from "../reducers/allUsersReducers";
+import {
+  setUsers,
+  setLoading,
+  setError,
+  setAverageScore,
+  setDoneCount,
+} from "../reducers/allUsersReducers";
 
 export const allUsers = () => async (dispatch, getState) => {
   dispatch(setLoading(true));
@@ -9,23 +15,22 @@ export const allUsers = () => async (dispatch, getState) => {
       `https://backend-production-8357.up.railway.app/api/admin/auth/peserta`,
       {
         headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
     console.log("Respons lengkap dari server:", response);
     const users = response.data.data;
     console.log("Data Peserta", users);
     dispatch(setUsers(users));
-
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.log("API Error Response:", error.respons);
-      dispatch(setError(error.response?.data?.message || 'Terjadi kesalahan'));
+      dispatch(setError(error.response?.data?.message || "Terjadi kesalahan"));
     } else {
-        console.error("Terjadi kesalahan:", error);
-      dispatch(setError('Terjadi kesalahan'));
+      console.error("Terjadi kesalahan:", error);
+      dispatch(setError("Terjadi kesalahan"));
     }
   } finally {
     dispatch(setLoading(false));
@@ -39,9 +44,9 @@ export const getTotalPoint = () => async (dispatch, getState) => {
       `https://backend-production-8357.up.railway.app/api/admin/totalPoints/average`,
       {
         headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
     const averageScore = response.data.data.averagePesertaPoints;
@@ -51,7 +56,25 @@ export const getTotalPoint = () => async (dispatch, getState) => {
     console.log("doneCount:", doneCount);
     dispatch(setDoneCount(doneCount));
   } catch (error) {
-    dispatch(setError(error.response?.data?.message || 'Gagal memuat'));
+    dispatch(setError(error.response?.data?.message || "Gagal memuat"));
   }
 };
 
+export const getDeletePeserta = (id, toast) => async (dispatch, getState) => {
+  const token = getState().auth.token || localStorage.getItem("token");
+  try {
+    const response = await axios.delete(
+      `https://backend-production-8357.up.railway.app/api/admin/auth/peserta/${id}`,
+      {
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    console.log("response", response);
+    toast.success("Hapus Akun Berhasil!");
+  } catch (error) {
+    console.log("error delete Peserta ", error);
+  }
+};
