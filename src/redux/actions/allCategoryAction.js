@@ -10,7 +10,7 @@ export const category = () => async (dispatch, getState) => {
   const token = getState().auth.token || localStorage.getItem("token");
   try {
     const response = await axios.get(
-      "https://backend-production-8357.up.railway.app/api/peserta/categories",
+      "https://backend-ancient-water-1319.fly.dev/api/peserta/categories",
       {
         headers: {
           accept: "application/json",
@@ -36,7 +36,7 @@ export const addCategory = (data) => async (dispatch, getState) => {
   const token = getState().auth.token || localStorage.getItem("token");
   try {
     const response = await axios.post(
-      `https://backend-production-8357.up.railway.app/api/admin/categories`,
+      `https://backend-ancient-water-1319.fly.dev/api/admin/categories`,
       data,
       {
         headers: {
@@ -62,7 +62,7 @@ export const updateCategory = (id, data) => {
     console.log(data);
     try {
       const response = await axios.put(
-        `https://backend-production-8357.up.railway.app/api/admin/categories/${id}`,
+        `https://backend-ancient-water-1319.fly.dev/api/admin/categories/${id}`,
         data,
         {
           headers: {
@@ -88,7 +88,7 @@ export const deleteCategory = (id) => async (dispatch, getState) => {
   const token = getState().auth.token || localStorage.getItem("token");
   try {
     await axios.delete(
-      `https://backend-production-8357.up.railway.app/api/admin/categories/${id}`,
+      `https://backend-ancient-water-1319.fly.dev/api/admin/categories/${id}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -113,7 +113,7 @@ export const questions = (categoryId) => async (dispatch, getState) => {
 
   try {
     const response = await axios.post(
-      "https://backend-production-8357.up.railway.app/api/admin/categories/questions",
+      "https://backend-ancient-water-1319.fly.dev/api/admin/categories/questions",
       { categoryId: String(categoryId) },
       {
         headers: {
@@ -180,7 +180,7 @@ export const addQuestions = (data) => async (dispatch, getState) => {
   try {
     // Mengirim data menggunakan axios
     const response = await axios.post(
-      "https://backend-production-8357.up.railway.app/api/admin/questions",
+      "https://backend-ancient-water-1319.fly.dev/api/admin/questions",
       formData,
       {
         headers: {
@@ -207,7 +207,7 @@ export const updateQuestion = (data, id) => {
     console.log(data);
     try {
       const response = await axios.put(
-        `https://backend-production-8357.up.railway.app/api/admin/questions/${id}`,
+        `https://backend-ancient-water-1319.fly.dev/api/admin/questions/${id}`,
         data,
         {
           headers: {
@@ -234,7 +234,7 @@ export const updateMultipleChoices = (data, id) => {
     console.log(data);
     try {
       const response = await axios.put(
-        `https://backend-production-8357.up.railway.app/api/admin/questions/multipleChoice/${id}`,
+        `https://backend-ancient-water-1319.fly.dev/api/admin/questions/multipleChoice/${id}`,
         data,
         {
           headers: {
@@ -264,7 +264,7 @@ export const updateAnswerKey =
     console.log("token", token);
     try {
       await axios.put(
-        `https://backend-production-8357.up.railway.app/api/admin/answerKeys/${id}`,
+        `https://backend-ancient-water-1319.fly.dev/api/admin/answerKeys/${id}`,
         data,
         {
           headers: {
@@ -291,7 +291,7 @@ export const deleteQuestion = (id) => async (dispatch, getState) => {
   const token = getState().auth.token || localStorage.getItem("token");
   try {
     await axios.delete(
-      `https://backend-production-8357.up.railway.app/api/admin/questions/${id}`,
+      `https://backend-ancient-water-1319.fly.dev/api/admin/questions/${id}`,
       {
         headers: {
           "Content-Type": "application/json",

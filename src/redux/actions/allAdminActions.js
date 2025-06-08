@@ -10,7 +10,7 @@ export const admin = () => async (dispatch, getState) => {
   const token = getState().auth.token || localStorage.getItem("token");
   try {
     const response = await axios.get(
-      "https://backend-production-8357.up.railway.app/api/superadmin/auth/admin",
+      "https://backend-ancient-water-1319.fly.dev/api/superadmin/auth/admin",
       {
         headers: {
           accept: "application/json",
@@ -36,7 +36,7 @@ export const addAdmin = (data, toast) => async (dispatch, getState) => {
   const token = getState().auth.token || localStorage.getItem("token");
   try {
     const response = await axios.post(
-      `https://backend-production-8357.up.railway.app/api/superadmin/auth/admin`,
+      `https://backend-ancient-water-1319.fly.dev/api/superadmin/auth/admin`,
       data,
       {
         headers: {
@@ -63,7 +63,7 @@ export const updateAdmin = (id, data, toast) => {
     console.log(data);
     try {
       const response = await axios.put(
-        `https://backend-production-8357.up.railway.app/api/superadmin/auth/admin/${id}`,
+        `https://backend-ancient-water-1319.fly.dev/api/superadmin/auth/admin/${id}`,
         data,
         {
           headers: {
@@ -90,7 +90,7 @@ export const deleteAdmin = (id) => async (dispatch, getState) => {
   const token = getState().auth.token || localStorage.getItem("token");
   try {
     await axios.delete(
-      `https://backend-production-8357.up.railway.app/api/superadmin/auth/admin/${id}`,
+      `https://backend-ancient-water-1319.fly.dev/api/superadmin/auth/admin/${id}`,
       {
         headers: {
           "Content-Type": "application/json",

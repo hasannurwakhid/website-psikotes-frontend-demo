@@ -12,7 +12,7 @@ export const getPesertaQuestion = (navigate) => async (dispatch, getState) => {
   const token = getState().auth.token;
   try {
     const response = await axios.get(
-      `https://backend-production-8357.up.railway.app/api/peserta/getPesertaQuestions`,
+      `https://backend-ancient-water-1319.fly.dev/api/peserta/getPesertaQuestions`,
       {
         headers: {
           accept: "application/json",
@@ -45,7 +45,7 @@ export const answerQuestion = (data, token) => async (dispatch, getState) => {
   const requestData = { multipleChoiceId };
   try {
     const response = await axios.post(
-      `https://backend-production-8357.up.railway.app/api/peserta/answerQuestion`,
+      `https://backend-ancient-water-1319.fly.dev/api/peserta/answerQuestion`,
       requestData,
       {
         headers: {
@@ -68,7 +68,7 @@ export const submitTest = (navigate) => async (dispatch, getState) => {
   const token = getState().auth.token;
   try {
     const response = await axios.get(
-      `https://backend-production-8357.up.railway.app/api/peserta/submit`,
+      `https://backend-ancient-water-1319.fly.dev/api/peserta/submit`,
       {
         headers: {
           accept: "application/json",

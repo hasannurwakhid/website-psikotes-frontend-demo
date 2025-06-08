@@ -12,7 +12,7 @@ export const allUsers = () => async (dispatch, getState) => {
   const token = getState().auth.token || localStorage.getItem("token");
   try {
     const response = await axios.get(
-      `https://backend-production-8357.up.railway.app/api/admin/auth/peserta`,
+      `https://backend-ancient-water-1319.fly.dev/api/admin/auth/peserta`,
       {
         headers: {
           accept: "application/json",
@@ -41,7 +41,7 @@ export const getTotalPoint = () => async (dispatch, getState) => {
   const token = getState().auth.token || localStorage.getItem("token");
   try {
     const response = await axios.get(
-      `https://backend-production-8357.up.railway.app/api/admin/totalPoints/average`,
+      `https://backend-ancient-water-1319.fly.dev/api/admin/totalPoints/average`,
       {
         headers: {
           accept: "application/json",
@@ -64,7 +64,7 @@ export const getDeletePeserta = (id, toast) => async (dispatch, getState) => {
   const token = getState().auth.token || localStorage.getItem("token");
   try {
     const response = await axios.delete(
-      `https://backend-production-8357.up.railway.app/api/admin/auth/peserta/${id}`,
+      `https://backend-ancient-water-1319.fly.dev/api/admin/auth/peserta/${id}`,
       {
         headers: {
           accept: "application/json",

@@ -10,7 +10,7 @@ export const login = (data, navigate, toast) => async (dispatch, getState) => {
   console.log(data);
   try {
     const response = await axios.post(
-      `https://backend-production-8357.up.railway.app/api/peserta/auth/login`,
+      `https://backend-ancient-water-1319.fly.dev/api/peserta/auth/login`,
       data,
       {
         headers: {
@@ -35,7 +35,7 @@ export const register =
   (data, navigate, toast) => async (dispatch, getState) => {
     try {
       const response = await axios.post(
-        `https://backend-production-8357.up.railway.app/api/peserta/auth/register`,
+        `https://backend-ancient-water-1319.fly.dev/api/peserta/auth/register`,
         data,
         {
           headers: {
@@ -57,7 +57,7 @@ export const getUserProfile = () => async (dispatch, getState) => {
   const token = getState().auth.token;
   try {
     const response = await axios.get(
-      `https://backend-production-8357.up.railway.app/api/peserta/auth/profile`,
+      `https://backend-ancient-water-1319.fly.dev/api/peserta/auth/profile`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -74,7 +74,7 @@ export const checkIsDone =
   (token, toast, navigate) => async (dispatch, getState) => {
     try {
       const response = await axios.get(
-        "https://backend-production-8357.up.railway.app/api/peserta/answerQuestion/isDone",
+        "https://backend-ancient-water-1319.fly.dev/api/peserta/answerQuestion/isDone",
         {
           headers: {
             accept: "application/json",
@@ -117,7 +117,7 @@ export const logout = (navigate, toast) => (dispatch) => {
 export const loginadmin = (data, navigate) => async (dispatch) => {
   try {
     const response = await axios.post(
-      `https://backend-production-8357.up.railway.app/api/admin/auth/login`,
+      `https://backend-ancient-water-1319.fly.dev/api/admin/auth/login`,
       data,
       {
         headers: {
